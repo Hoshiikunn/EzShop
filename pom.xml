@@ -9,6 +9,10 @@
     <version>${revision}</version>
     <packaging>jar</packaging>
     <name>ezshop</name>
+    <modules>
+        <module>EzShop-admin</module>
+        <module>EzShop-common</module>
+    </modules>
 
     <!-- SpringBoot版本 -->
     <parent>
