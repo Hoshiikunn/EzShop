@@ -7,8 +7,9 @@
     <groupId>cn.hoshiikunn.ezshop</groupId>
     <artifactId>EzShop</artifactId>
     <version>${revision}</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>ezshop</name>
+
     <modules>
         <module>EzShop-admin</module>
         <module>EzShop-common</module>
