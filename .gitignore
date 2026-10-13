@@ -1,0 +1,51 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Logs ###
+logs/
+*.log
+
+### Maven flatten plugin (CI Friendly ${revision} 生成物) ###
+.flattened-pom.xml
+
+# Power Designer
+*.pdb
+*.bak
+
+# 生产与测试环境排除
+application-prod.yml
+application-test.yml
+
+# 静态资源
+/oss-data/
