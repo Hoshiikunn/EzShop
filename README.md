@@ -1,4 +1,4 @@
-# ezshop 简易商店
+# EzShop 简易商店
 
 ### 介绍
 由 Hoshiikunn (星井ほしいくん) 开发的 “简易商店” 项目 <br>
@@ -20,7 +20,7 @@
 | 参数校验 | spring-boot-starter-validation | 随 parent |
 | ORM | mybatis-plus-boot-starter + mybatis-plus-jsqlparser | 3.5.17 |
 | 数据库驱动 | mysql-connector-j | 随 parent |
-| 连接池 | HikariCP（默认）或 druid-spring-boot-starter | 1.2.28 |
+| 连接池 | druid-spring-boot-starter | 1.2.28 |
 | 缓存 | spring-boot-starter-data-redis | 随 parent |
 | 接口文档 | knife4j-openapi3-**spring**-boot-starter | 4.5.0 |
 | 配置提示 | spring-boot-configuration-processor | 随 parent |
