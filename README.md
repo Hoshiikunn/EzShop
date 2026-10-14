@@ -1,4 +1,4 @@
-# ezshop 简易商店
+# EzShop 简易商店
 
 ### 介绍
 由 Hoshiikunn (星井ほしいくん) 开发的 “简易商店” 项目 <br>
