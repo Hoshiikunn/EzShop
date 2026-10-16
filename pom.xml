@@ -115,7 +115,7 @@
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-jsqlparser</artifactId>
+            <artifactId>mybatis-plus-jsqlparser-4.9</artifactId>
             <version>3.5.17</version>
         </dependency>
         <!-- IP归属地解析 -->
