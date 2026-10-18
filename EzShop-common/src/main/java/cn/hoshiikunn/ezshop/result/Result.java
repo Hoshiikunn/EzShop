@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+import static cn.hoshiikunn.ezshop.result.ResultCode.INTERNAL_SERVER_ERROR;
 import static cn.hoshiikunn.ezshop.result.ResultCode.SUCCESS;
 
 @Data
@@ -77,6 +78,29 @@ public class Result<T> implements Serializable {
         this.code = SUCCESS.getCode();
         this.msg = msg;
         this.setData(data);
+        return this;
+    }
+
+    /**
+     * 默认失败
+     *
+     * @return 500响应码及对应的响应信息的统一结果 - {@code Result}
+     */
+    public Result<T> error() {
+        this.code = INTERNAL_SERVER_ERROR.getCode();
+        this.msg = INTERNAL_SERVER_ERROR.getMsg();
+        return this;
+    }
+
+    /**
+     * 指定响应码枚举的失败
+     *
+     * @param resultCode 响应码枚举
+     * @return 封装后的的统一结果 - {@code Result}
+     */
+    public Result<T> error(ResultCode resultCode) {
+        this.code = resultCode.getCode();
+        this.msg = resultCode.getMsg();
         return this;
     }
 }
