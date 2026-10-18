@@ -91,4 +91,17 @@ public class Result<T> implements Serializable {
         this.msg = resultCode.getMsg();
         return this;
     }
+
+    /**
+     * 指定响应码和响应信息的失败
+     *
+     * @param code 响应码
+     * @param msg  响应消息
+     * @return 封装后的的统一结果 - {@code Result}
+     */
+    public Result<T> error(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+        return this;
+    }
 }
