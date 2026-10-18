@@ -56,18 +56,6 @@ public class Result<T> implements Serializable {
     }
 
     /**
-     * 指定消息内容的成功
-     *
-     * @param msg 消息内容
-     * @return 封装后的的统一结果 - {@code Result}
-     */
-    public Result<T> ok(String msg) {
-        this.code = SUCCESS.getCode();
-        this.msg = msg;
-        return this;
-    }
-
-    /**
      * 指定消息内容和数据的成功
      *
      * @param data 响应数据
