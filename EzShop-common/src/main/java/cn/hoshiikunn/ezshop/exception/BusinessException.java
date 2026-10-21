@@ -39,4 +39,16 @@ public class BusinessException extends RuntimeException {
         this.code = resultCode.getCode();
         this.msg = resultCode.getMsg();
     }
+
+    /**
+     * 指定响应码和消息内容构造业务异常
+     *
+     * @param code 响应码
+     * @param msg  消息内容
+     */
+    public BusinessException(Integer code, String msg) {
+        super(msg);
+        this.code = code;
+        this.msg = msg;
+    }
 }

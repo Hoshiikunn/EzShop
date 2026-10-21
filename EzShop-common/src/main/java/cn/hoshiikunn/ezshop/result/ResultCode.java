@@ -31,7 +31,10 @@ public enum ResultCode {
     UNAUTHORIZED(401, "登录信息已失效，请重新登录"),
     FORBIDDEN(403, "您没有权限"),
     NOT_FOUND(404, "请求地址不存在"),
-    INTERNAL_SERVER_ERROR(500, "内部服务错误");
+    INTERNAL_SERVER_ERROR(500, "内部服务错误"),
+
+    // ==================== 认证模块 - 1 01 xxx ====================
+    USERNAME_OR_PASSWORD_ERROR(101001, "用户名或密码错误");
 
     // 响应码
     private final Integer code;

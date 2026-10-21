@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/10/14 18:43:03                          */
+/* Created on:     2026/10/21 18:16:47                          */
 /*==============================================================*/
 
 
@@ -20,7 +20,7 @@ drop table if exists sys_user;
 create table sys_user
 (
    id                   bigint not null comment '用户ID',
-   username             varchar(32) not null comment '用户名',
+   username             varchar(20) not null comment '用户名',
    password             varchar(100) not null comment '密码',
    real_name            varchar(32) comment '真实姓名',
    avatar_url           varchar(255) comment '头像',
