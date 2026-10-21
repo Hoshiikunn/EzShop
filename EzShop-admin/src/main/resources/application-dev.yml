@@ -49,6 +49,11 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
+# JWT令牌签发配置
+token:
+  secret: "XgzcyYkDArbr5eppm0JMex7lRn0Y+CHsZZvzZPtKianRSUnEF7zG+2/zJhSgP7it"
+  expire: 8h
+
 # OSS 存储配置
 oss:
   # 通用文件
