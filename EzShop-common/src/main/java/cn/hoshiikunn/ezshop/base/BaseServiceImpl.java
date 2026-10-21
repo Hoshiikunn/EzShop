@@ -8,5 +8,5 @@ import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
  * <p>
  * 所有服务实现类必须继承此类
  */
-public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> implements BaseService<T> {
+public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> implements BaseService<T> {
 }
