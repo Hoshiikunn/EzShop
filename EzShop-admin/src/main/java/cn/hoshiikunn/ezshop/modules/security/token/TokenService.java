@@ -16,4 +16,14 @@ public interface TokenService {
      * @return 登录令牌
      */
     LoginTokenVO issueToken(Long userId);
+
+    /**
+     * 校验令牌
+     *
+     * @param token JWT 令牌
+     * @return 有效返回 {@code userId}
+     * <p>
+     * 篡改 / 过期 / 登出 / 无效 返回 {@code null}
+     */
+    Long verifyToken(String token);
 }

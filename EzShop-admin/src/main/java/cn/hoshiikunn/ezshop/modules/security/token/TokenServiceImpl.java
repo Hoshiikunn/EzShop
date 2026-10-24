@@ -5,12 +5,14 @@ import cn.hoshiikunn.ezshop.redis.RedisUtils;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.jwt.JWT;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
@@ -55,6 +57,32 @@ public class TokenServiceImpl implements TokenService {
         vo.setToken(token);
         vo.setExpiresAt(expiresAt);
         return vo;
+    }
+
+    @Override
+    public Long verifyToken(String token) {
+        try {
+            // 验签 + 过期校验
+            JWT jwt = JWT.of(token).setKey(secretBytes());
+            if (!jwt.validate(0)) {
+                log.debug("令牌验签或时间校验失败");
+                return null;
+            }
+
+            // 取 jti 查白名单，被互踢 / 已登出 / Redis 已过期的令牌在此失效
+            String jti = (String) jwt.getPayload("jti");
+            String userId = (String) redisUtils.get(TOKEN_KEY_PREFIX + jti);
+            if (userId == null) {
+                log.debug("令牌 Redis 白名单无记录 | jti = {}", jti);
+                return null;
+            }
+
+            return Long.valueOf(userId);
+        } catch (Exception e) {
+            log.debug("格式非法 / 验签过程异常：{}", e.getMessage());
+
+            return null;
+        }
     }
 
     /**
