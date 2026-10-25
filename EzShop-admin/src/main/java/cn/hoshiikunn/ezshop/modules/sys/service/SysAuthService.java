@@ -7,6 +7,7 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.LoginTokenVO;
  * 系统认证服务层
  */
 public interface SysAuthService {
+
     /**
      * 登录
      *
@@ -14,4 +15,9 @@ public interface SysAuthService {
      * @return 登录令牌
      */
     LoginTokenVO login(LoginDTO dto);
+
+    /**
+     * 登出
+     */
+    void logout();
 }
