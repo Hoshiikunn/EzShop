@@ -14,4 +14,12 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @return 系统用户实体
      */
     SysUserEntity getUserEntityByUsername(String username);
+
+    /**
+     * 更新最后登录时间
+     *
+     * @param ip     登录IP
+     * @param userId 用户ID
+     */
+    void updateLastLoginInfo(String ip, Long userId);
 }
