@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 系统认证控制层
  */
@@ -26,10 +28,10 @@ public class SysAuthController {
 
     @PostMapping("/login")
     @Operation(summary = "登录")
-    public Result<LoginTokenVO> login(@RequestBody LoginDTO dto) {
+    public Result<LoginTokenVO> login(HttpServletRequest request, @RequestBody LoginDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
-        LoginTokenVO loginToken = authService.login(dto);
+        LoginTokenVO loginToken = authService.login(request, dto);
 
         return new Result<LoginTokenVO>().ok(loginToken, "登录成功");
     }

@@ -8,10 +8,13 @@ import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysAuthService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.LoginTokenVO;
+import cn.hoshiikunn.ezshop.utils.IpUtils;
 import cn.hutool.crypto.digest.BCrypt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
 import static cn.hoshiikunn.ezshop.result.ResultCode.USERNAME_OR_PASSWORD_ERROR;
@@ -25,7 +28,7 @@ public class SysAuthServiceImpl implements SysAuthService {
     private final TokenService tokenService;
 
     @Override
-    public LoginTokenVO login(LoginDTO dto) {
+    public LoginTokenVO login(HttpServletRequest request, LoginDTO dto) {
         String username = dto.getUsername();
         String password = dto.getPassword();
 
@@ -35,8 +38,15 @@ public class SysAuthServiceImpl implements SysAuthService {
             throw new BusinessException(USERNAME_OR_PASSWORD_ERROR);
         }
 
+        Long userId = userEntity.getId();
         // 签发令牌 存储redis
-        return tokenService.issueToken(userEntity.getId());
+        LoginTokenVO token = tokenService.issueToken(userId);
+        // 获取登录的客户端IP
+        String clientIp = IpUtils.getClientIp(request);
+        // 回写登录IP和登录时间
+        userService.updateLastLoginInfo(clientIp, userId);
+
+        return token;
     }
 
     @Override
