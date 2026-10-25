@@ -26,4 +26,13 @@ public interface TokenService {
      * 篡改 / 过期 / 登出 / 无效 返回 {@code null}
      */
     Long verifyToken(String token);
+
+    /**
+     * 移除令牌
+     * <p>
+     * 登出 / 失效指定用户的令牌
+     *
+     * @param userId 用户ID
+     */
+    void removeToken(Long userId);
 }

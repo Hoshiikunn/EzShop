@@ -85,6 +85,18 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
+    @Override
+    public void removeToken(Long userId) {
+        String jti = (String) redisUtils.get(USER_KEY_PREFIX + userId);
+        if (jti != null) {
+            redisUtils.delete(TOKEN_KEY_PREFIX + jti);
+        }
+
+        redisUtils.delete(USER_KEY_PREFIX + userId);
+
+        // TODO: 当前逻辑为非原子性，存在并发可能，后续修复
+    }
+
     /**
      * 密钥转换字节数组
      *
