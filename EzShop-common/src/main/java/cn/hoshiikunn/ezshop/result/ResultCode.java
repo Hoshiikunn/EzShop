@@ -34,7 +34,10 @@ public enum ResultCode {
     INTERNAL_SERVER_ERROR(500, "内部服务错误"),
 
     // ==================== 认证模块 - 1 01 xxx ====================
-    USERNAME_OR_PASSWORD_ERROR(101001, "用户名或密码错误");
+    USERNAME_OR_PASSWORD_ERROR(101001, "用户名或密码错误"),
+    USER_NOT_FOUND(101002, "用户不存在"),
+
+    ;
 
     // 响应码
     private final Integer code;
