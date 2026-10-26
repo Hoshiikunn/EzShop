@@ -1,7 +1,10 @@
 package cn.hoshiikunn.ezshop.modules.sys.service;
 
 import cn.hoshiikunn.ezshop.base.BaseService;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * 系统用户服务层
@@ -22,4 +25,12 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @param userId 用户ID
      */
     void updateLastLoginInfo(String ip, Long userId);
+
+    /**
+     * 用户分页查询
+     *
+     * @param dto 系统用户分页条件查询参数
+     * @return 查询的分页对象
+     */
+    Page<SysUserPageVO> pageUsers(SysUserPageDTO dto);
 }
