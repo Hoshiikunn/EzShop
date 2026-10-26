@@ -50,6 +50,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         wrapper.like(StrUtil.isNotBlank(dto.getUsername()), SysUserEntity::getUsername, dto.getUsername())
                 .like(StrUtil.isNotBlank(dto.getRealName()), SysUserEntity::getRealName, dto.getRealName())
                 .eq(StrUtil.isNotBlank(dto.getMobile()), SysUserEntity::getMobile, dto.getMobile())
+                .eq(dto.getGender() != null, SysUserEntity::getGender, dto.getGender())
                 .eq(dto.getStatus() != null, SysUserEntity::getStatus, dto.getStatus())
                 .ge(dto.getCreateTimeBegin() != null, SysUserEntity::getCreateTime, dto.getCreateTimeBegin())
                 .le(dto.getCreateTimeEnd() != null, SysUserEntity::getCreateTime, dto.getCreateTimeEnd())
