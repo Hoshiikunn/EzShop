@@ -3,6 +3,7 @@ package cn.hoshiikunn.ezshop.modules.sys.service;
 import cn.hoshiikunn.ezshop.base.BaseService;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * 系统用户服务层
  */
 public interface SysUserService extends BaseService<SysUserEntity> {
+
     /**
      * 根据用户名获取用户实体
      *
@@ -33,4 +35,12 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @return 查询的分页对象
      */
     Page<SysUserPageVO> pageUsers(SysUserPageDTO dto);
+
+    /**
+     * 获取指定用户详情
+     *
+     * @param id 目标用户ID
+     * @return 用户信息
+     */
+    SysUserInfoVO getUserInfo(Long id);
 }

@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.modules.sys.controller;
 
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +35,13 @@ public class SysUserController {
         Page<SysUserPageVO> userPage = userService.pageUsers(dto);
 
         return new Result<Page<SysUserPageVO>>().ok(userPage);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "用户详情")
+    public Result<SysUserInfoVO> info(@PathVariable Long id) {
+        SysUserInfoVO userInfo = userService.getUserInfo(id);
+
+        return new Result<SysUserInfoVO>().ok(userInfo);
     }
 }

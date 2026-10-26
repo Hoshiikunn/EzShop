@@ -1,11 +1,14 @@
 package cn.hoshiikunn.ezshop.modules.sys.service.impl;
 
 import cn.hoshiikunn.ezshop.base.BaseServiceImpl;
+import cn.hoshiikunn.ezshop.exception.BusinessException;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysUserDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -14,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+
+import static cn.hoshiikunn.ezshop.result.ResultCode.USER_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -52,5 +57,15 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         Page<SysUserEntity> result = this.page(page, wrapper);
 
         return (Page<SysUserPageVO>) result.convert(SysUserPageVO::of);
+    }
+
+    @Override
+    public SysUserInfoVO getUserInfo(Long id) {
+        SysUserEntity userEntity = this.getById(id);
+        if (userEntity == null) {
+            throw new BusinessException(USER_NOT_FOUND);
+        }
+
+        return BeanUtil.toBean(userEntity, SysUserInfoVO.class);
     }
 }
