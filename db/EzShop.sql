@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/10/21 18:16:47                          */
+/* Created on:     2026/11/3 17:08:21                           */
 /*==============================================================*/
 
 
@@ -22,10 +22,10 @@ create table sys_user
    id                   bigint not null comment '用户ID',
    username             varchar(20) not null comment '用户名',
    password             varchar(100) not null comment '密码',
-   real_name            varchar(32) comment '真实姓名',
+   real_name            varchar(32) not null comment '真实姓名',
    avatar_url           varchar(255) comment '头像',
    gender               tinyint not null default 1 comment '性别 0-女 1-男',
-   mobile               varchar(20) comment '电话号码',
+   mobile               varchar(11) comment '手机号',
    email                varchar(100) comment '邮箱',
    status               tinyint not null default 1 comment '状态 0-禁用 1-启用',
    is_super_admin       tinyint not null default 0 comment '是否超级管理员 0-否 1-是',
