@@ -1,6 +1,6 @@
 package cn.hoshiikunn.ezshop.exception;
 
-import cn.hoshiikunn.ezshop.result.ResultCode;
+import cn.hoshiikunn.ezshop.result.IResultCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,7 +22,7 @@ public class BusinessException extends RuntimeException {
      *
      * @param resultCode 响应码枚举
      */
-    public BusinessException(ResultCode resultCode) {
+    public BusinessException(IResultCode resultCode) {
         super(resultCode.getMsg());
         this.code = resultCode.getCode();
         this.msg = resultCode.getMsg();
@@ -34,7 +34,7 @@ public class BusinessException extends RuntimeException {
      * @param resultCode 响应码枚举
      * @param e          原始异常
      */
-    public BusinessException(ResultCode resultCode, Throwable e) {
+    public BusinessException(IResultCode resultCode, Throwable e) {
         super(resultCode.getMsg(), e);
         this.code = resultCode.getCode();
         this.msg = resultCode.getMsg();

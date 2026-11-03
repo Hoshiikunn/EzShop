@@ -5,6 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,8 @@ import java.util.Date;
  */
 @Data
 @Schema(description = "系统用户分页信息")
-public class SysUserPageVO {
+public class SysUserPageVO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Schema(description = "用户ID")
     private Long id;

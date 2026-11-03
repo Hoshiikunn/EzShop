@@ -17,11 +17,11 @@ public class LoginDTO implements Serializable {
 
     @Schema(description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "用户名为必填项")
-    @Length(max = 20, message = "用户名或密码错误")
+    @Length(min = 4, max = 20, message = "用户名或密码错误")
     private String username;
 
     @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "密码为必填项")
-    @Length(max = 32, message = "用户名或密码错误")
+    @Length(min = 6, max = 32, message = "用户名或密码错误")
     private String password;
 }
