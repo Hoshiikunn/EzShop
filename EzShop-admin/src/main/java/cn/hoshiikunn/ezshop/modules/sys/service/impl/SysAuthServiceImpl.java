@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.USERNAME_OR_PASSWORD_ERROR;
 import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
-import static cn.hoshiikunn.ezshop.result.ResultCode.USERNAME_OR_PASSWORD_ERROR;
 
 @Slf4j
 @Service

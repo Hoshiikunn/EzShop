@@ -1,9 +1,11 @@
 package cn.hoshiikunn.ezshop.modules.sys.service;
 
 import cn.hoshiikunn.ezshop.base.BaseService;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
@@ -43,4 +45,12 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @return 用户信息
      */
     SysUserInfoVO getUserInfo(Long id);
+
+    /**
+     * 添加用户
+     *
+     * @param dto 用户参数
+     * @return 用户初始化值 (用户名与初始密码)
+     */
+    SysUserInitVO addUser(SysUserDTO dto);
 }

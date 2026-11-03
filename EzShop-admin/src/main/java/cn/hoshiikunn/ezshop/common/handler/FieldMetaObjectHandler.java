@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.common.handler;
 
+import cn.hoshiikunn.ezshop.modules.security.user.SecurityUser;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,8 @@ import java.util.Date;
 
 /**
  * 字段自动填充处理器
+ * <p>
+ * 进行 新增与更新 写库操作时，会自动填充字段值
  */
 @Component
 public class FieldMetaObjectHandler implements MetaObjectHandler {
@@ -18,27 +21,20 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        // TODO: 需要获取用户ID，先完成 登录功能 与 shiro认证
-        // UserDetail user = SecurityUser.getUser();
-        Date date = new Date();
+        Long userId = SecurityUser.getUserId();
 
         // 创建者
-        // strictInsertFill(metaObject, CREATOR, Long.class, user.getId());
+        strictInsertFill(metaObject, CREATOR, Long.class, userId);
         // 创建时间
-        strictInsertFill(metaObject, CREATE_TIME, Date.class, date);
-        // 更新者
-        // strictInsertFill(metaObject, UPDATER, Long.class, user.getId());
-        // 更新时间
-        strictInsertFill(metaObject, UPDATE_TIME, Date.class, date);
+        strictInsertFill(metaObject, CREATE_TIME, Date.class, new Date());
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        // TODO: 同上
-        // UserDetail user = SecurityUser.getUser();
+        Long userId = SecurityUser.getUserId();
 
         // 更新者
-        // strictUpdateFill(metaObject, UPDATER, Long.class, user.getId());
+        strictUpdateFill(metaObject, UPDATER, Long.class, userId);
         // 更新时间
         strictUpdateFill(metaObject, UPDATE_TIME, Date.class, new Date());
     }
