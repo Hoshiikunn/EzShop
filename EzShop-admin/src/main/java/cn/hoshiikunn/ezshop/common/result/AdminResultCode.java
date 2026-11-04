@@ -23,8 +23,8 @@ public enum AdminResultCode implements IResultCode {
     // ==================== 用户模块 - 102 ====================
     USER_NOT_FOUND(102001, "用户不存在"),
     USER_USERNAME_EXISTS(102002, "用户名已存在"),
-    USER_MOBILE_EXISTS(102003, "该手机号已被其他用户绑定"),
-    USER_EMAIL_EXISTS(102004, "该邮箱已被其他用户绑定"),
+    USER_MOBILE_EXISTS(102003, "该手机号已被其他账号绑定"),
+    USER_EMAIL_EXISTS(102004, "该邮箱已被其他账号绑定"),
 
     ;
 
