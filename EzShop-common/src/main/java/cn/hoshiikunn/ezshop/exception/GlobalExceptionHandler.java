@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.exception;
 
 import cn.hoshiikunn.ezshop.result.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -23,6 +24,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public Result<?> handleBusinessException(BusinessException bx) {
         return new Result<>().error(bx.getCode(), bx.getMsg());
+    }
+
+    /**
+     * 处理数据库重复键异常
+     *
+     * @param dex 重复键异常
+     * @return {@code Result} 统一响应
+     */
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Result<?> handleDuplicateKeyException(DuplicateKeyException dex) {
+        return new Result<>().error(INTERNAL_SERVER_ERROR.getCode(), "提交的信息与现有数据冲突，请刷新后重试");
     }
 
     /**

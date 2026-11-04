@@ -101,6 +101,31 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         return vo;
     }
 
+    @Override
+    public void updateUser(SysUserDTO dto) {
+        // 检查被修改的用户是否存在
+        SysUserEntity userEntity = this.getById(dto.getId());
+        if (userEntity == null) {
+            throw new BusinessException(USER_NOT_FOUND, "被修改的用户不存在");
+        }
+        // 检查唯一性
+        checkUnique(dto);
+        // 组装修改内容
+        LambdaUpdateWrapper<SysUserEntity> wrapper = new LambdaUpdateWrapper<SysUserEntity>()
+                .eq(SysUserEntity::getId, userEntity.getId())
+                .set(SysUserEntity::getUsername, dto.getUsername())
+                .set(SysUserEntity::getRealName, dto.getRealName())
+                .set(SysUserEntity::getGender, dto.getGender())
+                .set(SysUserEntity::getMobile, StrUtil.blankToDefault(dto.getMobile(), null))
+                .set(SysUserEntity::getEmail, StrUtil.blankToDefault(dto.getEmail(), null))
+                .set(SysUserEntity::getAvatarUrl, StrUtil.blankToDefault(dto.getAvatarUrl(), null));
+        // 写库
+        boolean updated = this.update(new SysUserEntity(), wrapper);
+        if (!updated) {
+            throw new BusinessException(USER_NOT_FOUND, "被修改的用户不存在");
+        }
+    }
+
     /**
      * 检查唯一性
      * <p>

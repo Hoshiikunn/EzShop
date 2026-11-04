@@ -9,6 +9,7 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
+import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,5 +54,15 @@ public class SysUserController {
         SysUserInitVO vo = userService.addUser(dto);
 
         return new Result<SysUserInitVO>().ok(vo, "添加成功");
+    }
+
+    @PutMapping("/update")
+    @Operation(summary = "修改用户")
+    public Result<?> update(@RequestBody SysUserDTO dto) {
+        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
+
+        userService.updateUser(dto);
+
+        return new Result<>().ok(null, "修改成功");
     }
 }

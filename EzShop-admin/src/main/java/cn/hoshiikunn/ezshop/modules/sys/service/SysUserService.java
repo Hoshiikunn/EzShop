@@ -53,4 +53,11 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @return 用户初始化值 (用户名与初始密码)
      */
     SysUserInitVO addUser(SysUserDTO dto);
+
+    /**
+     * 修改用户
+     *
+     * @param dto 用户参数
+     */
+    void updateUser(SysUserDTO dto);
 }
