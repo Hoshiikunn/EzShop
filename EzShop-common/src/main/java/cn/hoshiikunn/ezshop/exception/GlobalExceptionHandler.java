@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static cn.hoshiikunn.ezshop.result.ResultCode.BAD_REQUEST;
 import static cn.hoshiikunn.ezshop.result.ResultCode.INTERNAL_SERVER_ERROR;
 
 /**
@@ -34,7 +35,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<?> handleDuplicateKeyException(DuplicateKeyException dex) {
-        return new Result<>().error(INTERNAL_SERVER_ERROR.getCode(), "提交的信息与现有数据冲突，请刷新后重试");
+        return new Result<>().error(BAD_REQUEST.getCode(), "提交的信息与现有数据冲突，请刷新后重试");
     }
 
     /**
