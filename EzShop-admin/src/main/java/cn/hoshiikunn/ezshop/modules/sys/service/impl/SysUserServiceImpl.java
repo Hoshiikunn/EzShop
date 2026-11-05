@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.modules.sys.service.impl;
 
 import cn.hoshiikunn.ezshop.base.BaseServiceImpl;
 import cn.hoshiikunn.ezshop.exception.BusinessException;
+import cn.hoshiikunn.ezshop.modules.security.token.TokenService;
 import cn.hoshiikunn.ezshop.modules.security.user.SecurityUser;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysUserDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
@@ -18,19 +19,27 @@ import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
+import static cn.hoshiikunn.ezshop.modules.sys.enums.DeleteFlagEnum.DELETED;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.IS_SUPER_ADMIN;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.NOT_SUPER_ADMIN;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.ENABLE;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntity> implements SysUserService {
+
+    private final TokenService tokenService;
 
     @Override
     public SysUserEntity getUserEntityByUsername(String username) {
@@ -142,6 +151,47 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchDeleteUsers(List<Long> ids) {
+        // 去重
+        List<Long> distinctIds = ids.stream().distinct().collect(Collectors.toList());
+
+        // 数量比对
+        List<SysUserEntity> userEntityList = this.listByIds(distinctIds);
+        if (userEntityList.size() != distinctIds.size()) {
+            throw new BusinessException(USER_NOT_FOUND, "部分用户不存在或已被删除，请刷新后重试");
+        }
+
+        // 不能删除当前登录账号
+        if (distinctIds.contains(SecurityUser.getUserId())) {
+            throw new BusinessException(USER_SELF_DELETE_FORBIDDEN);
+        }
+
+        // 超管批次整体拒绝
+        boolean containsSuper = userEntityList.stream()
+                .anyMatch(user -> IS_SUPER_ADMIN.getValue().equals(user.getIsSuperAdmin()));
+        if (containsSuper) {
+            throw new BusinessException(USER_SUPER_ADMIN_DELETE_FORBIDDEN);
+        }
+
+        // 墓碑重命名 + 逻辑删 + 记录删除时间：逐行处理
+        Date now = new Date();
+        for (SysUserEntity user : userEntityList) {
+            LambdaUpdateWrapper<SysUserEntity> wrapper = new LambdaUpdateWrapper<SysUserEntity>()
+                    .eq(SysUserEntity::getId, user.getId())
+                    .set(SysUserEntity::getUsername, buildTombstone(user.getUsername(), user.getId()))
+                    .set(SysUserEntity::getMobile, buildTombstone(user.getMobile(), user.getId()))
+                    .set(SysUserEntity::getEmail, buildTombstone(user.getEmail(), user.getId()))
+                    .set(SysUserEntity::getIsDeleted, DELETED.getValue())
+                    .set(SysUserEntity::getDeleteTime, now);
+            this.update(new SysUserEntity(), wrapper);
+        }
+
+        // 立即失效被删用户的已签发令牌
+        userEntityList.forEach(user -> tokenService.removeToken(user.getId()));
+    }
+
     /**
      * 检查唯一性
      * <p>
@@ -178,5 +228,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
                 throw new BusinessException(USER_EMAIL_EXISTS);
             }
         }
+    }
+
+    /**
+     * 构建墓碑值 {原值}-del-{id}
+     * <p>
+     * 可空字段未占用时返回 null，无需墓碑
+     */
+    private String buildTombstone(String value, Long id) {
+        if (StrUtil.isBlank(value)) {
+            return null;
+        }
+        return value + "-del-" + id;
     }
 }

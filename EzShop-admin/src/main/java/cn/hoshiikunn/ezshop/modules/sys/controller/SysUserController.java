@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserBatchDeleteDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
@@ -64,5 +65,15 @@ public class SysUserController {
         userService.updateUser(dto);
 
         return new Result<>().ok(null, "修改成功");
+    }
+
+    @PostMapping("/batch/delete")
+    @Operation(summary = "批量删除用户")
+    public Result<?> batchDelete(@RequestBody SysUserBatchDeleteDTO dto) {
+        ValidatorUtils.validateEntity(dto);
+
+        userService.batchDeleteUsers(dto.getIds());
+
+        return new Result<Void>().ok(null, "删除成功");
     }
 }

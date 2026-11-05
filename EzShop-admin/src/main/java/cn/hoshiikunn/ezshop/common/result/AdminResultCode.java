@@ -23,8 +23,10 @@ public enum AdminResultCode implements IResultCode {
     // ==================== 用户模块 - 102 ====================
     USER_NOT_FOUND(102001, "用户不存在"),
     USER_USERNAME_EXISTS(102002, "用户名已存在"),
-    USER_MOBILE_EXISTS(102003, "该手机号已被其他账号绑定"),
-    USER_EMAIL_EXISTS(102004, "该邮箱已被其他账号绑定"),
+    USER_MOBILE_EXISTS(102003, "该手机号已被使用"),
+    USER_EMAIL_EXISTS(102004, "该邮箱已被使用"),
+    USER_SUPER_ADMIN_DELETE_FORBIDDEN(102005, "禁止删除超级管理员"),
+    USER_SELF_DELETE_FORBIDDEN(102006, "不能删除当前登录账号"),
 
     ;
 

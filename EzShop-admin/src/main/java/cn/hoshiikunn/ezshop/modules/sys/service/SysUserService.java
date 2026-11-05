@@ -9,6 +9,8 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.List;
+
 /**
  * 系统用户服务层
  */
@@ -60,4 +62,11 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @param dto 用户参数
      */
     void updateUser(SysUserDTO dto);
+
+    /**
+     * 批量删除用户
+     *
+     * @param ids 用户ID列表
+     */
+    void batchDeleteUsers(List<Long> ids);
 }
