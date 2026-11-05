@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.modules.sys.service.impl;
 
 import cn.hoshiikunn.ezshop.base.BaseServiceImpl;
 import cn.hoshiikunn.ezshop.exception.BusinessException;
+import cn.hoshiikunn.ezshop.modules.security.user.SecurityUser;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysUserDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
+import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.IS_SUPER_ADMIN;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.NOT_SUPER_ADMIN;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.ENABLE;
 
@@ -50,6 +52,11 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
 
     @Override
     public Page<SysUserPageVO> pageUsers(SysUserPageDTO dto) {
+        // 非超管无法查看超管账号
+        SysUserEntity viewer = this.getById(SecurityUser.getUserId());
+        boolean viewerIsSuper = viewer != null
+                && IS_SUPER_ADMIN.getValue().equals(viewer.getIsSuperAdmin());
+
         Page<SysUserEntity> page = new Page<>(dto.getCurrent(), dto.getSize());
 
         LambdaQueryWrapper<SysUserEntity> wrapper = new LambdaQueryWrapper<>();
@@ -58,6 +65,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
                 .eq(StrUtil.isNotBlank(dto.getMobile()), SysUserEntity::getMobile, dto.getMobile())
                 .eq(dto.getGender() != null, SysUserEntity::getGender, dto.getGender())
                 .eq(dto.getStatus() != null, SysUserEntity::getStatus, dto.getStatus())
+                .ne(!viewerIsSuper, SysUserEntity::getIsSuperAdmin, IS_SUPER_ADMIN.getValue())
                 .ge(dto.getCreateTimeBegin() != null, SysUserEntity::getCreateTime, dto.getCreateTimeBegin())
                 .le(dto.getCreateTimeEnd() != null, SysUserEntity::getCreateTime, dto.getCreateTimeEnd())
                 .orderByDesc(SysUserEntity::getCreateTime);
@@ -70,6 +78,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     public SysUserInfoVO getUserInfo(Long id) {
         SysUserEntity userEntity = this.getById(id);
         if (userEntity == null) {
+            throw new BusinessException(USER_NOT_FOUND);
+        }
+
+        // 非超管不可查看超管详情
+        SysUserEntity viewer = this.getById(SecurityUser.getUserId());
+        boolean viewerIsSuper = viewer != null
+                && IS_SUPER_ADMIN.getValue().equals(viewer.getIsSuperAdmin());
+        if (!viewerIsSuper && IS_SUPER_ADMIN.getValue().equals(userEntity.getIsSuperAdmin())) {
             throw new BusinessException(USER_NOT_FOUND);
         }
 
