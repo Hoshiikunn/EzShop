@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/3 17:08:21                           */
+/* Created on:     2026/11/5 23:07:31                           */
 /*==============================================================*/
 
 
@@ -20,13 +20,13 @@ drop table if exists sys_user;
 create table sys_user
 (
    id                   bigint not null comment '用户ID',
-   username             varchar(20) not null comment '用户名',
+   username             varchar(64) not null comment '用户名',
    password             varchar(100) not null comment '密码',
    real_name            varchar(32) not null comment '真实姓名',
    avatar_url           varchar(255) comment '头像',
    gender               tinyint not null default 1 comment '性别 0-女 1-男',
-   mobile               varchar(11) comment '手机号',
-   email                varchar(100) comment '邮箱',
+   mobile               varchar(64) comment '手机号',
+   email                varchar(128) comment '邮箱',
    status               tinyint not null default 1 comment '状态 0-禁用 1-启用',
    is_super_admin       tinyint not null default 0 comment '是否超级管理员 0-否 1-是',
    last_login_ip        varchar(45) comment '最后登录IP地址',
