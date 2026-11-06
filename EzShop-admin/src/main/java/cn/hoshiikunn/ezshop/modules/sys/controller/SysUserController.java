@@ -3,6 +3,7 @@ package cn.hoshiikunn.ezshop.modules.sys.controller;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserBatchDeleteDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
@@ -75,5 +76,15 @@ public class SysUserController {
         userService.batchDeleteUsers(dto.getIds());
 
         return new Result<Void>().ok(null, "删除成功");
+    }
+
+    @PostMapping("/change/status")
+    @Operation(summary = "变更用户状态")
+    public Result<?> changeStatus(@RequestBody SysUserStatusDTO dto) {
+        ValidatorUtils.validateEntity(dto);
+
+        userService.changeUserStatus(dto);
+
+        return new Result<>().ok(null, "变更成功");
     }
 }

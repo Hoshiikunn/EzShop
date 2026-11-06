@@ -50,6 +50,4 @@ public class SysUserDTO implements Serializable {
     @Email(message = "邮箱格式错误")
     @Length(max = 100, message = "邮箱长度超限")
     private String email;
-
-    // TODO: 状态需要单独接口，禁用需删除令牌
 }

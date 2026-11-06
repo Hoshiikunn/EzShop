@@ -27,6 +27,9 @@ public enum AdminResultCode implements IResultCode {
     USER_EMAIL_EXISTS(102004, "该邮箱已被使用"),
     USER_SUPER_ADMIN_DELETE_FORBIDDEN(102005, "禁止删除超级管理员"),
     USER_SELF_DELETE_FORBIDDEN(102006, "不能删除当前登录账号"),
+    USER_SUPER_ADMIN_DISABLE_FORBIDDEN(102007, "不可禁用超级管理员"),
+    USER_SELF_DISABLE_FORBIDDEN(102008, "不可禁用自己"),
+    USER_DISABLED(102009, "账号已被禁用"),
 
     ;
 

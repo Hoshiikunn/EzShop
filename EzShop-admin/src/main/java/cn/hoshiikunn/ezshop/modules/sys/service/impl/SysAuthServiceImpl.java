@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.USERNAME_OR_PASSWORD_ERROR;
+import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.USER_DISABLED;
+import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.DISABLE;
 import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
 
 @Slf4j
@@ -32,10 +34,14 @@ public class SysAuthServiceImpl implements SysAuthService {
         String username = dto.getUsername();
         String password = dto.getPassword();
 
-        // 用户不存在或密码错误 -> 抛异常
+        // 用户不存在或密码错误
         SysUserEntity userEntity = userService.getUserEntityByUsername(username);
         if (userEntity == null || !BCrypt.checkpw(password, userEntity.getPassword())) {
             throw new BusinessException(USERNAME_OR_PASSWORD_ERROR);
+        }
+        // 状态检查
+        if (DISABLE.getValue().equals(userEntity.getStatus())) {
+            throw new BusinessException(USER_DISABLED);
         }
 
         Long userId = userEntity.getId();

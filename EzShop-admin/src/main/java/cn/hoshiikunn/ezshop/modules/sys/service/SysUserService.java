@@ -3,6 +3,7 @@ package cn.hoshiikunn.ezshop.modules.sys.service;
 import cn.hoshiikunn.ezshop.base.BaseService;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
@@ -69,4 +70,11 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @param ids 用户ID列表
      */
     void batchDeleteUsers(List<Long> ids);
+
+    /**
+     * 更改用户状态
+     *
+     * @param dto 用户状态参数
+     */
+    void changeUserStatus(SysUserStatusDTO dto);
 }

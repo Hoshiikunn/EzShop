@@ -7,6 +7,7 @@ import cn.hoshiikunn.ezshop.modules.security.user.SecurityUser;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysUserDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
@@ -20,7 +21,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +32,9 @@ import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.DeleteFlagEnum.DELETED;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.IS_SUPER_ADMIN;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.NOT_SUPER_ADMIN;
+import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.DISABLE;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.ENABLE;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntity> implements SysUserService {
@@ -190,6 +190,41 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
 
         // 立即失效被删用户的已签发令牌
         userEntityList.forEach(user -> tokenService.removeToken(user.getId()));
+    }
+
+    @Override
+    public void changeUserStatus(SysUserStatusDTO dto) {
+        // 存在性检查
+        SysUserEntity userEntity = this.getById(dto.getId());
+        if (userEntity == null) {
+            throw new BusinessException(USER_NOT_FOUND, "被变更的用户不存在");
+        }
+
+        // 已是目标状态就直接返回
+        if (userEntity.getStatus().equals(dto.getStatus())) {
+            return;
+        }
+
+        // 超管不可禁用
+        boolean disabling = DISABLE.getValue().equals(dto.getStatus());
+        if (disabling && IS_SUPER_ADMIN.getValue().equals(userEntity.getIsSuperAdmin())) {
+            throw new BusinessException(USER_SUPER_ADMIN_DISABLE_FORBIDDEN);
+        }
+
+        // 不能禁用自己
+        if (disabling && userEntity.getId().equals(SecurityUser.getUserId())) {
+            throw new BusinessException(USER_SELF_DISABLE_FORBIDDEN);
+        }
+
+        LambdaUpdateWrapper<SysUserEntity> wrapper = new LambdaUpdateWrapper<SysUserEntity>()
+                .eq(SysUserEntity::getId, dto.getId())
+                .set(SysUserEntity::getStatus, dto.getStatus());
+        this.update(new SysUserEntity(), wrapper);
+
+        // 只有禁用才踢令牌
+        if (disabling) {
+            tokenService.removeToken(dto.getId());
+        }
     }
 
     /**
