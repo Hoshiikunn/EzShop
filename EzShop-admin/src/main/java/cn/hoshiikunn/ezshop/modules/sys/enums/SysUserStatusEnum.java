@@ -17,7 +17,7 @@ public enum SysUserStatusEnum {
     /**
      * 禁用
      */
-    DISABLED(0);
+    DISABLE(0);
 
     private final Integer value;
 }
