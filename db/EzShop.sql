@@ -1,8 +1,18 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/5 23:07:31                           */
+/* Created on:     2026/11/7 17:05:31                           */
 /*==============================================================*/
 
+
+drop index idx_pid on sys_menu;
+
+drop table if exists sys_menu;
+
+drop index uk_role_key on sys_role;
+
+drop table if exists sys_role;
+
+drop table if exists sys_role_menu;
 
 drop index idx_status on sys_user;
 
@@ -13,6 +23,84 @@ drop index uk_mobile on sys_user;
 drop index uk_username on sys_user;
 
 drop table if exists sys_user;
+
+drop table if exists sys_user_role;
+
+/*==============================================================*/
+/* Table: sys_menu                                              */
+/*==============================================================*/
+create table sys_menu
+(
+   id                   bigint not null comment '菜单ID',
+   pid                  bigint not null default 0 comment '父菜单ID',
+   menu_name            varchar(50) not null comment '菜单名称',
+   menu_type            char(1) not null comment '菜单类型 M-目录 C-菜单 F-按钮',
+   path                 varchar(255) comment '路由地址',
+   component            varchar(255) comment '组件路径',
+   perms                varchar(255) comment '权限标识',
+   icon                 varchar(50) comment '菜单图标',
+   sort                 int not null default 0 comment '排序',
+   visible              tinyint not null default 1 comment '可见性 0-隐藏 1-显示',
+   open_style           tinyint not null default 0 comment '打开方式 0-内部打开 1-外部打开',
+   status               tinyint not null default 1 comment '状态 0-禁用 1-启用',
+   creator              bigint comment '创建者',
+   create_time          datetime comment '创建时间',
+   updater              bigint comment '更新者',
+   update_time          datetime comment '更新时间',
+   primary key (id)
+);
+
+alter table sys_menu comment '系统菜单表';
+
+/*==============================================================*/
+/* Index: idx_pid                                               */
+/*==============================================================*/
+create index idx_pid on sys_menu
+(
+   pid
+);
+
+/*==============================================================*/
+/* Table: sys_role                                              */
+/*==============================================================*/
+create table sys_role
+(
+   id                   bigint not null comment '角色ID',
+   role_name            varchar(30) not null comment '角色名称',
+   role_key             varchar(100) not null comment '角色权限键',
+   sort                 int not null default 0 comment '排序',
+   status               tinyint not null default 1 comment '状态 0-禁用 1-启用',
+   remark               varchar(255) comment '备注',
+   creator              bigint comment '创建者',
+   create_time          datetime comment '创建时间',
+   updater              bigint comment '更新者',
+   update_time          datetime comment '更新时间',
+   primary key (id)
+);
+
+alter table sys_role comment '系统角色表';
+
+/*==============================================================*/
+/* Index: uk_role_key                                           */
+/*==============================================================*/
+create unique index uk_role_key on sys_role
+(
+   role_key
+);
+
+/*==============================================================*/
+/* Table: sys_role_menu                                         */
+/*==============================================================*/
+create table sys_role_menu
+(
+   role_id              bigint not null comment '角色ID',
+   menu_id              bigint not null comment '菜单ID',
+   creator              bigint comment '创建者',
+   create_time          datetime comment '创建时间',
+   primary key (role_id, menu_id)
+);
+
+alter table sys_role_menu comment '角色菜单关联表';
 
 /*==============================================================*/
 /* Table: sys_user                                              */
@@ -74,4 +162,18 @@ create index idx_status on sys_user
 (
    status
 );
+
+/*==============================================================*/
+/* Table: sys_user_role                                         */
+/*==============================================================*/
+create table sys_user_role
+(
+   user_id              bigint not null comment '用户ID',
+   role_id              bigint not null comment '角色ID',
+   creator              bigint comment '创建者',
+   create_time          datetime comment '创建时间',
+   primary key (user_id, role_id)
+);
+
+alter table sys_user_role comment '用户角色关联表';
 
