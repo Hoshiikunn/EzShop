@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/7 17:05:31                           */
+/* Created on:     2026/11/8 20:48:08                           */
 /*==============================================================*/
 
 
@@ -67,7 +67,7 @@ create table sys_role
 (
    id                   bigint not null comment '角色ID',
    role_name            varchar(30) not null comment '角色名称',
-   role_key             varchar(100) not null comment '角色权限键',
+   role_key             varchar(100) not null comment '角色权限字符',
    sort                 int not null default 0 comment '排序',
    status               tinyint not null default 1 comment '状态 0-禁用 1-启用',
    remark               varchar(255) comment '备注',

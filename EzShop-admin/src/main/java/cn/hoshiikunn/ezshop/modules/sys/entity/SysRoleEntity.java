@@ -19,7 +19,7 @@ public class SysRoleEntity extends BaseEntity {
     private String roleName;
 
     /**
-     * 角色权限键
+     * 角色权限字符
      */
     private String roleKey;
 
