@@ -41,6 +41,26 @@ knife4j:
   setting:
     enableFooter: false
 
+# Shiro 过滤器白名单
+shiro:
+  anon-paths:
+    # 认证接口 (公开)
+    - /admin/auth/login
+    # 接口文档
+    - /doc.html
+    - /webjars/**
+    - /swagger-resources/**
+    - /v2/api-docs/**
+    - /v3/api-docs/**
+    # 监控
+    - /druid/**
+    # 静态资源
+    - /static/**
+    - /favicon.ico
+    - /**/favicon.ico
+    # 错误页
+    - /error
+
 # SQL 日志
 logging:
   level:

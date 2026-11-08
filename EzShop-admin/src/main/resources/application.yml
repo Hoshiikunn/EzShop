@@ -59,27 +59,6 @@ spring:
   main:
     allow-bean-definition-overriding: false
 
-# Shiro 过滤器白名单
-shiro:
-  anon-paths:
-    # 认证接口 (公开)
-    - /admin/auth/login
-    # 接口文档
-    - /doc.html
-    - /webjars/**
-    - /swagger-resources/**
-    - /v2/api-docs/**
-    - /v3/api-docs/**
-    # 监控 / 验证码
-    - /druid/**
-    - /captcha/**
-    # 静态资源
-    - /static/**
-    - /favicon.ico
-    - /**/favicon.ico
-    # 错误页
-    - /error
-
 # Swagger 接口文档配置
 knife4j:
   enable: false

@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
@@ -66,6 +67,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         boolean viewerIsSuper = viewer != null
                 && IS_SUPER_ADMIN.getValue().equals(viewer.getIsSuperAdmin());
 
+        // 构建分页实体
         Page<SysUserEntity> page = new Page<>(dto.getCurrent(), dto.getSize());
 
         LambdaQueryWrapper<SysUserEntity> wrapper = new LambdaQueryWrapper<>();
@@ -225,6 +227,16 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         if (disabling) {
             tokenService.removeToken(dto.getId());
         }
+    }
+
+    @Override
+    public Set<String> getRoleKeysByUserId(Long userId) {
+        return baseMapper.selectRoleKeysByUserId(userId);
+    }
+
+    @Override
+    public Set<String> getPermsByUserId(Long userId) {
+        return baseMapper.selectPermsByUserId(userId);
     }
 
     /**
