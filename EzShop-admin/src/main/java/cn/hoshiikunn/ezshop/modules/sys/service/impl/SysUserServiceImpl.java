@@ -36,6 +36,9 @@ import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.NOT_SUPER_
 import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.DISABLE;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.ENABLE;
 
+/**
+ * 系统用户服务实现类
+ */
 @Service
 @RequiredArgsConstructor
 public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntity> implements SysUserService {
