@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
 /**
@@ -19,24 +20,28 @@ import java.util.Date;
 @Schema(description = "系统用户分页条件查询参数")
 public class SysUserPageDTO extends BasePageDTO {
 
+    @Schema(description = "用户ID")
+    @Positive(message = "用户ID必须大于0")
+    private Long id;
+
     @Schema(description = "用户名")
-    @Length(max = 20, message = "用户名长度超限")
+    @Length(max = 20, message = "用户名长度不可超过 20 字符")
     private String username;
 
     @Schema(description = "真实姓名")
-    @Length(max = 32, message = "真实姓名长度超限")
+    @Length(max = 32, message = "真实姓名长度不可超过 32 字符")
     private String realName;
 
     @Schema(description = "性别 0-女 1-男")
-    @Range(min = 0, max = 1, message = "性别范围 0-1")
+    @Range(min = 0, max = 1, message = "性别取值只能为 0(女) 1(男)")
     private Integer gender;
 
     @Schema(description = "手机号")
-    @Pattern(regexp = "^$|^1\\d{10}$", message = "手机号格式错误")
+    @Pattern(regexp = "^$|^1\\d{10}$", message = "只支持中国大陆手机号")
     private String mobile;
 
     @Schema(description = "状态 0-禁用 1-启用")
-    @Range(min = 0, max = 1, message = "状态范围 0-1")
+    @Range(min = 0, max = 1, message = "状态取值只能为 0(禁用) 1(启用)")
     private Integer status;
 
     @Schema(description = "创建时间起")
