@@ -2,12 +2,12 @@ package cn.hoshiikunn.ezshop.exception;
 
 import cn.hoshiikunn.ezshop.result.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static cn.hoshiikunn.ezshop.result.ResultCode.BAD_REQUEST;
-import static cn.hoshiikunn.ezshop.result.ResultCode.INTERNAL_SERVER_ERROR;
+import static cn.hoshiikunn.ezshop.result.ResultCode.*;
 
 /**
  * 全局异常处理器
@@ -25,6 +25,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public Result<?> handleBusinessException(BusinessException bx) {
         return new Result<>().error(bx.getCode(), bx.getMsg());
+    }
+
+    /**
+     * 处理未授权异常
+     *
+     * @param ue 未授权异常
+     * @return {@code Result} 统一响应
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public Result<?> handleUnauthorizedException(UnauthorizedException ue) {
+        return new Result<>().error(FORBIDDEN);
     }
 
     /**
