@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,7 @@ public class SysUserController {
 
     @GetMapping("/page")
     @Operation(summary = "分页条件查询")
+    @RequiresPermissions("sys:user:page")
     public Result<Page<SysUserPageVO>> page(@ParameterObject SysUserPageDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
@@ -42,6 +44,7 @@ public class SysUserController {
 
     @GetMapping("/{id}")
     @Operation(summary = "用户详情")
+    @RequiresPermissions("sys:user:query")
     public Result<SysUserInfoVO> info(@PathVariable Long id) {
         SysUserInfoVO userInfo = userService.getUserInfo(id);
 
@@ -50,6 +53,7 @@ public class SysUserController {
 
     @PostMapping("/add")
     @Operation(summary = "添加用户")
+    @RequiresPermissions("sys:user:add")
     public Result<SysUserInitVO> add(@RequestBody SysUserDTO dto) {
         ValidatorUtils.validateEntity(dto, AddGroup.class);
 
@@ -60,6 +64,7 @@ public class SysUserController {
 
     @PutMapping("/update")
     @Operation(summary = "修改用户")
+    @RequiresPermissions("sys:user:update")
     public Result<?> update(@RequestBody SysUserDTO dto) {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class);
 
@@ -70,6 +75,7 @@ public class SysUserController {
 
     @PostMapping("/batch/delete")
     @Operation(summary = "批量删除用户")
+    @RequiresPermissions("sys:user:delete")
     public Result<?> batchDelete(@RequestBody SysUserBatchDeleteDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
@@ -80,6 +86,7 @@ public class SysUserController {
 
     @PostMapping("/change/status")
     @Operation(summary = "变更用户状态")
+    @RequiresPermissions("sys:user:status")
     public Result<?> changeStatus(@RequestBody SysUserStatusDTO dto) {
         ValidatorUtils.validateEntity(dto);
 

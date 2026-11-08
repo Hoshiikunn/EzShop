@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.common.config;
 
 import cn.hoshiikunn.ezshop.modules.security.shiro.JwtFilter;
 import cn.hoshiikunn.ezshop.modules.security.shiro.JwtRealm;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.config.ShiroFilterConfiguration;
 import org.apache.shiro.mgt.SecurityManager;
@@ -84,6 +85,16 @@ public class ShiroConfig {
         // 过滤链：yml 白名单 anon + 兜底 jwt
         shiroFilter.setFilterChainDefinitionMap(buildFilterChain(filterProperties));
         return shiroFilter;
+    }
+
+    /**
+     * 注册授权切面 @RequiresPermissions / @RequiresRoles
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
     }
 
     /**
