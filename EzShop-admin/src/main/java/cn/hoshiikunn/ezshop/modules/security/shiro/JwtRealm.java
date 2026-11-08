@@ -1,6 +1,8 @@
 package cn.hoshiikunn.ezshop.modules.security.shiro;
 
 import cn.hoshiikunn.ezshop.modules.security.token.TokenService;
+import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
+import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -12,6 +14,11 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.IS_SUPER_ADMIN;
+
 /**
  * 校验核心
  */
@@ -20,6 +27,7 @@ import org.springframework.stereotype.Component;
 public class JwtRealm extends AuthorizingRealm {
 
     private final TokenService tokenService;
+    private final SysUserService userService;
 
     /**
      * 声明该Realm可以校验 JWT令牌
@@ -57,6 +65,23 @@ public class JwtRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return new SimpleAuthorizationInfo();
+        // 获取主身份
+        Long userId = (Long) principals.getPrimaryPrincipal();
+
+        // 装载角色
+        Set<String> roleKeys = userService.getRoleKeysByUserId(userId);
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        info.setRoles(roleKeys);
+
+        // 若是超级管理员，就赋予全部权限 TODO: 每次请求都会查 SQL 获取用户信息
+        SysUserEntity user = userService.getById(userId);
+        if (user.getIsSuperAdmin().equals(IS_SUPER_ADMIN.getValue())) {
+            info.addStringPermission("*");
+            return info;
+        }
+
+        // 装载权限标识
+        info.setStringPermissions(new HashSet<>(userService.getPermsByUserId(userId)));
+        return info;
     }
 }

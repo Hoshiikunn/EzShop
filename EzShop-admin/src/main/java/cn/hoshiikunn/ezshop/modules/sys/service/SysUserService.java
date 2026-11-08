@@ -11,6 +11,7 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 系统用户服务层
@@ -77,4 +78,20 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @param dto 用户状态参数
      */
     void changeUserStatus(SysUserStatusDTO dto);
+
+    /**
+     * 查询用户持有的角色键集合
+     *
+     * @param userId 用户ID
+     * @return 角色键集合
+     */
+    Set<String> getRoleKeysByUserId(Long userId);
+
+    /**
+     * 查询用户持有的权限标识集合
+     *
+     * @param userId 用户ID
+     * @return perms 集合
+     */
+    Set<String> getPermsByUserId(Long userId);
 }
