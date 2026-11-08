@@ -8,6 +8,11 @@
 
 > 当前状态：**用户模块闭环 (v0.0.3)**，RBAC 权限体系与安全加固规划中...
 
+### 仓库
+
+- 后端仓库：[Hoshiikunn/EzShop](https://github.com/Hoshiikunn/EzShop)
+- 前端仓库：[Hoshiikunn/EzShop-web](https://github.com/Hoshiikunn/EzShop-web)
+
 ### 技术栈
 
 基础环境：JDK 8 · Maven 3.6+ · Spring Boot **2.7.18** (JDK 8 的最终稳定版)
