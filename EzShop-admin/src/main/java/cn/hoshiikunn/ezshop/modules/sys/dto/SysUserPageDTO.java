@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
 /**
@@ -18,6 +19,10 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Schema(description = "系统用户分页条件查询参数")
 public class SysUserPageDTO extends BasePageDTO {
+
+    @Schema(description = "用户ID")
+    @Positive(message = "用户ID必须大于0")
+    private Long id;
 
     @Schema(description = "用户名")
     @Length(max = 20, message = "用户名长度超限")

@@ -74,7 +74,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         Page<SysUserEntity> page = new Page<>(dto.getCurrent(), dto.getSize());
 
         LambdaQueryWrapper<SysUserEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(StrUtil.isNotBlank(dto.getUsername()), SysUserEntity::getUsername, dto.getUsername())
+        wrapper.eq(dto.getId() != null, SysUserEntity::getId, dto.getId())
+                .like(StrUtil.isNotBlank(dto.getUsername()), SysUserEntity::getUsername, dto.getUsername())
                 .like(StrUtil.isNotBlank(dto.getRealName()), SysUserEntity::getRealName, dto.getRealName())
                 .eq(StrUtil.isNotBlank(dto.getMobile()), SysUserEntity::getMobile, dto.getMobile())
                 .eq(dto.getGender() != null, SysUserEntity::getGender, dto.getGender())
