@@ -39,7 +39,7 @@ public class SysUserDTO implements Serializable {
 
     @Schema(description = "性别 0-女 1-男", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "性别为必填项")
-    @Range(min = 0, max = 1, message = "性别取值只能为 0(女) 或 1(男)")
+    @Range(min = 0, max = 1, message = "性别取值只能为 0(女) 1(男)")
     private Integer gender;
 
     @Schema(description = "手机号")
