@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/8 20:48:08                           */
+/* Created on:     2026/11/10 18:31:35                          */
 /*==============================================================*/
 
 
@@ -11,6 +11,8 @@ drop table if exists sys_menu;
 drop index uk_role_key on sys_role;
 
 drop table if exists sys_role;
+
+drop index uk_role_menu on sys_role_menu;
 
 drop table if exists sys_role_menu;
 
@@ -23,6 +25,8 @@ drop index uk_mobile on sys_user;
 drop index uk_username on sys_user;
 
 drop table if exists sys_user;
+
+drop index uk_user_role on sys_user_role;
 
 drop table if exists sys_user_role;
 
@@ -93,14 +97,24 @@ create unique index uk_role_key on sys_role
 /*==============================================================*/
 create table sys_role_menu
 (
+   id                   bigint not null comment '主键ID',
    role_id              bigint not null comment '角色ID',
    menu_id              bigint not null comment '菜单ID',
    creator              bigint comment '创建者',
    create_time          datetime comment '创建时间',
-   primary key (role_id, menu_id)
+   primary key (id)
 );
 
 alter table sys_role_menu comment '角色菜单关联表';
+
+/*==============================================================*/
+/* Index: uk_role_menu                                          */
+/*==============================================================*/
+create unique index uk_role_menu on sys_role_menu
+(
+   role_id,
+   menu_id
+);
 
 /*==============================================================*/
 /* Table: sys_user                                              */
@@ -168,12 +182,22 @@ create index idx_status on sys_user
 /*==============================================================*/
 create table sys_user_role
 (
+   id                   bigint not null comment '主键ID',
    user_id              bigint not null comment '用户ID',
    role_id              bigint not null comment '角色ID',
    creator              bigint comment '创建者',
    create_time          datetime comment '创建时间',
-   primary key (user_id, role_id)
+   primary key (id)
 );
 
 alter table sys_user_role comment '用户角色关联表';
+
+/*==============================================================*/
+/* Index: uk_user_role                                          */
+/*==============================================================*/
+create unique index uk_user_role on sys_user_role
+(
+   user_id,
+   role_id
+);
 
