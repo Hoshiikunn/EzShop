@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.modules.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -18,6 +19,12 @@ public class SysRoleMenuEntity implements Serializable {
      * 序列号
      */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键ID
+     */
+    @TableId
+    private Long id;
 
     /**
      * 角色ID
