@@ -1,6 +1,7 @@
 package cn.hoshiikunn.ezshop.modules.sys.service;
 
 import cn.hoshiikunn.ezshop.base.BaseService;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
@@ -27,4 +28,11 @@ public interface SysRoleService extends BaseService<SysRoleEntity> {
      * @return 角色信息
      */
     SysRoleInfoVO getRoleInfo(Long id);
+
+    /**
+     * 添加角色
+     *
+     * @param dto 角色参数
+     */
+    void addRole(SysRoleDTO dto);
 }
