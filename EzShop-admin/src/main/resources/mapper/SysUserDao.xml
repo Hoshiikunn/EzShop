@@ -13,9 +13,11 @@
     <select id="selectPermsByUserId" resultType="java.lang.String">
         SELECT DISTINCT m.perms
         FROM sys_user_role ur
+                 JOIN sys_role r ON r.id = ur.role_id
                  JOIN sys_role_menu rm ON rm.role_id = ur.role_id
                  JOIN sys_menu m ON m.id = rm.menu_id
         WHERE ur.user_id = #{userId}
+          AND r.status = 1
           AND m.status = 1
           AND m.perms IS NOT NULL
     </select>
