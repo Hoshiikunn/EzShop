@@ -35,4 +35,11 @@ public interface SysRoleService extends BaseService<SysRoleEntity> {
      * @param dto 角色参数
      */
     void addRole(SysRoleDTO dto);
+
+    /**
+     * 修改角色
+     *
+     * @param dto 角色参数
+     */
+    void updateRole(SysRoleDTO dto);
 }
