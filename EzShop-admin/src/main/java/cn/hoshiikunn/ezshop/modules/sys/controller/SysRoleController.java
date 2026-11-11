@@ -8,6 +8,7 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
+import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,5 +57,16 @@ public class SysRoleController {
         roleService.addRole(dto);
 
         return new Result<>().ok(null, "添加成功");
+    }
+
+    @PutMapping("/update")
+    @Operation(summary = "修改角色")
+    @RequiresPermissions("sys:role:update")
+    public Result<?> update(@RequestBody SysRoleDTO dto) {
+        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
+
+        roleService.updateRole(dto);
+
+        return new Result<>().ok(null, "修改成功");
     }
 }

@@ -13,15 +13,17 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 import static cn.hoshiikunn.ezshop.common.enums.CommonStatusEnum.ENABLE;
-import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.ROLE_KEY_EXISTS;
-import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.ROLE_NOT_FOUND;
+import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
 
 /**
  * 角色服务实现类
@@ -90,5 +92,34 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
 
         // 保存角色菜单关系
         roleMenuService.saveOrUpdate(addEntity.getId(), dto.getMenuIds());
+    }
+
+    @Override
+    public void updateRole(SysRoleDTO dto) {
+        // 检查角色存在性
+        SysRoleEntity roleEntity = this.getById(dto.getId());
+        if (roleEntity == null) {
+            throw new BusinessException(ROLE_NOT_FOUND, "被修改的角色不存在");
+        }
+
+        // 权限字符不可修改
+        if (dto.getRoleKey() != null) {
+            throw new BusinessException(ROLE_KEY_NOT_MODIFIABLE);
+        }
+
+        // 更新角色基础信息
+        LambdaUpdateWrapper<SysRoleEntity> updateWrapper = new LambdaUpdateWrapper<SysRoleEntity>()
+                .eq(SysRoleEntity::getId, roleEntity.getId())
+                .set(SysRoleEntity::getRoleName, dto.getRoleName())
+                .set(SysRoleEntity::getSort, dto.getSort())
+                .set(SysRoleEntity::getRemark, StrUtil.blankToDefault(dto.getRemark(), null));
+
+        boolean updated = this.update(new SysRoleEntity(), updateWrapper);
+        if (!updated) {
+            throw new BusinessException(ROLE_NOT_FOUND, "被修改的角色不存在");
+        }
+
+        // 全量替换角色菜单绑定
+        roleMenuService.saveOrUpdate(roleEntity.getId(), dto.getMenuIds());
     }
 }
