@@ -35,6 +35,8 @@ public enum AdminResultCode implements IResultCode {
     // ==================== 角色模块 - 103 ====================
     ROLE_NOT_FOUND(103001, "角色不存在"),
     ROLE_KEY_EXISTS(103002, "权限字符已存在"),
+    ROLE_KEY_NOT_MODIFIABLE(103003, "权限字符不可被修改"),
+
 
     // ==================== 菜单模块 - 104 ====================
     MENU_NOT_FOUND(104001, "菜单不存在"),
