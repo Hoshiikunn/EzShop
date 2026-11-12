@@ -27,7 +27,7 @@ public class SysRoleDTO implements Serializable {
     @NotNull(message = "角色ID不能为空", groups = UpdateGroup.class)
     private Long id;
 
-    @Schema(description = "角色名称")
+    @Schema(description = "角色名称", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "角色名称为必填项")
     @Length(max = 30, message = "角色名称长度不可超过 30 字符")
     private String roleName;
@@ -43,7 +43,7 @@ public class SysRoleDTO implements Serializable {
     )
     private String roleKey;
 
-    @Schema(description = "排序")
+    @Schema(description = "排序", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "排序为必填项")
     @Range(min = 0, max = 9999, message = "排序取值范围为 0-9999")
     private Integer sort;

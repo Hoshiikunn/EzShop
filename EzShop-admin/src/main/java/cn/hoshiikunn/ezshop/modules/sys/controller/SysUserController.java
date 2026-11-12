@@ -33,7 +33,7 @@ public class SysUserController {
 
     @GetMapping("/page")
     @Operation(summary = "分页条件查询")
-    @RequiresPermissions("sys:user:page")
+    @RequiresPermissions("sys:user:query")
     public Result<Page<SysUserPageVO>> page(@ParameterObject SysUserPageDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
@@ -44,7 +44,7 @@ public class SysUserController {
 
     @GetMapping("/{id}")
     @Operation(summary = "用户详情")
-    @RequiresPermissions("sys:user:query")
+    @RequiresPermissions("sys:user:info")
     public Result<SysUserInfoVO> info(@PathVariable Long id) {
         SysUserInfoVO userInfo = userService.getUserInfo(id);
 

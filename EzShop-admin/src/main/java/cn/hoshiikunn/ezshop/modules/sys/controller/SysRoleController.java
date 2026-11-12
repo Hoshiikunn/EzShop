@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.modules.sys.controller;
 
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
@@ -30,7 +31,7 @@ public class SysRoleController {
 
     @GetMapping("/page")
     @Operation(summary = "分页条件查询")
-    @RequiresPermissions("sys:role:page")
+    @RequiresPermissions("sys:role:query")
     public Result<Page<SysRolePageVO>> page(@ParameterObject SysRolePageDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
@@ -41,7 +42,7 @@ public class SysRoleController {
 
     @GetMapping("/{id}")
     @Operation(summary = "角色详情")
-    @RequiresPermissions("sys:role:query")
+    @RequiresPermissions("sys:role:info")
     public Result<SysRoleInfoVO> info(@PathVariable Long id) {
         SysRoleInfoVO roleInfo = roleService.getRoleInfo(id);
 
@@ -80,5 +81,16 @@ public class SysRoleController {
         roleService.deleteRole(id, force);
 
         return new Result<>().ok(null, "删除成功");
+    }
+
+    @PostMapping("/change/status")
+    @Operation(summary = "变更角色状态")
+    @RequiresPermissions("sys:role:status")
+    public Result<?> changeStatus(@RequestBody SysRoleStatusDTO dto) {
+        ValidatorUtils.validateEntity(dto);
+
+        roleService.changeRoleStatus(dto);
+
+        return new Result<>().ok(null, "变更成功");
     }
 }

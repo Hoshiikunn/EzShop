@@ -3,6 +3,7 @@ package cn.hoshiikunn.ezshop.modules.sys.service;
 import cn.hoshiikunn.ezshop.base.BaseService;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
@@ -46,8 +47,15 @@ public interface SysRoleService extends BaseService<SysRoleEntity> {
     /**
      * 删除角色
      *
-     * @param id 角色ID
+     * @param id    角色ID
      * @param force 是否强制删除仍被用户绑定的角色
      */
     void deleteRole(Long id, boolean force);
+
+    /**
+     * 变更角色状态
+     *
+     * @param dto
+     */
+    void changeRoleStatus(SysRoleStatusDTO dto);
 }
