@@ -81,4 +81,15 @@ public class SysRoleController {
 
         return new Result<>().ok(null, "删除成功");
     }
+
+    @PostMapping("/change/status")
+    @Operation(summary = "变更角色状态")
+    @RequiresPermissions("sys:role:status")
+    public Result<?> changeStatus(@RequestBody SysRoleStatusDTO dto) {
+        ValidatorUtils.validateEntity(dto);
+
+        roleService.changeRoleStatus(dto);
+
+        return new Result<>().ok(null, "变更成功");
+    }
 }

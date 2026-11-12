@@ -5,6 +5,7 @@ import cn.hoshiikunn.ezshop.exception.BusinessException;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysRoleDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
@@ -152,5 +153,29 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
         roleMenuService.deleteByRoleId(id);
         // 删除角色本身
         this.removeById(id);
+    }
+
+    @Override
+    public void changeRoleStatus(SysRoleStatusDTO dto) {
+        // 存在性检查
+        SysRoleEntity roleEntity = this.getById(dto.getId());
+        if (roleEntity == null) {
+            throw new BusinessException(ROLE_NOT_FOUND, "被变更的角色不存在");
+        }
+
+        // 已是目标状态就直接返回
+        if (roleEntity.getStatus().equals(dto.getStatus())) {
+            return;
+        }
+
+        // 更新角色状态
+        LambdaUpdateWrapper<SysRoleEntity> updateWrapper = new LambdaUpdateWrapper<SysRoleEntity>()
+                .eq(SysRoleEntity::getId, roleEntity.getId())
+                .set(SysRoleEntity::getStatus, dto.getStatus());
+
+        boolean updated = this.update(new SysRoleEntity(), updateWrapper);
+        if (!updated) {
+            throw new BusinessException(ROLE_NOT_FOUND, "被变更的角色不存在");
+        }
     }
 }
