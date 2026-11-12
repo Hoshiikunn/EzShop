@@ -6,6 +6,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import static cn.hoshiikunn.ezshop.result.ResultCode.*;
 
@@ -47,6 +48,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<?> handleDuplicateKeyException(DuplicateKeyException dex) {
         return new Result<>().error(BAD_REQUEST.getCode(), "提交的信息与现有数据冲突，请刷新后重试");
+    }
+
+    /**
+     * 处理方法参数类型不匹配异常
+     *
+     * @param matme 方法参数类型不匹配异常
+     * @return 统一响应
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public Result<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException matme) {
+        return new Result<>().error(BAD_REQUEST);
     }
 
     /**

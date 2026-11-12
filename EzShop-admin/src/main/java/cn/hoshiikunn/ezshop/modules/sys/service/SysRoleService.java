@@ -42,4 +42,12 @@ public interface SysRoleService extends BaseService<SysRoleEntity> {
      * @param dto 角色参数
      */
     void updateRole(SysRoleDTO dto);
+
+    /**
+     * 删除角色
+     *
+     * @param id 角色ID
+     * @param force 是否强制删除仍被用户绑定的角色
+     */
+    void deleteRole(Long id, boolean force);
 }
