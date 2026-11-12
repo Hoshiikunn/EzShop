@@ -8,6 +8,7 @@ import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
+import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
 import cn.hutool.core.bean.BeanUtil;
@@ -33,6 +34,7 @@ import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
 public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntity> implements SysRoleService {
 
     private final SysRoleMenuService roleMenuService;
+    private final SysUserRoleService userRoleService;
 
     @Override
     public Page<SysRolePageVO> pageRole(SysRolePageDTO dto) {
@@ -121,5 +123,34 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
 
         // 全量替换角色菜单绑定
         roleMenuService.saveOrUpdate(roleEntity.getId(), dto.getMenuIds());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteRole(Long id, boolean force) {
+        // 检查角色存在性
+        SysRoleEntity roleEntity = this.getById(id);
+        if (roleEntity == null) {
+            throw new BusinessException(ROLE_NOT_FOUND, "被删除的角色不存在");
+        }
+
+        // 查询仍绑定该角色的用户数量
+        long userCount = userRoleService.countByRoleId(id);
+        // 有用户绑定且未强制删除时，拒绝删除
+        if (userCount > 0 && !force) {
+            throw new BusinessException(
+                    ROLE_HAS_USERS,
+                    "角色已绑定 " + userCount + " 个用户，请确认后强制删除"
+            );
+        }
+
+        // 如果强制删除，先解除用户角色绑定
+        if (userCount > 0) {
+            userRoleService.deleteByRoleId(id);
+        }
+        // 清理角色菜单绑定
+        roleMenuService.deleteByRoleId(id);
+        // 删除角色本身
+        this.removeById(id);
     }
 }

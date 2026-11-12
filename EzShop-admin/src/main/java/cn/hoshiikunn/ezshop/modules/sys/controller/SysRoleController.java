@@ -69,4 +69,16 @@ public class SysRoleController {
 
         return new Result<>().ok(null, "修改成功");
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除角色")
+    @RequiresPermissions("sys:role:delete")
+    public Result<?> delete(
+            @PathVariable Long id,
+            @RequestParam(name = "force", defaultValue = "false") boolean force) {
+
+        roleService.deleteRole(id, force);
+
+        return new Result<>().ok(null, "删除成功");
+    }
 }
