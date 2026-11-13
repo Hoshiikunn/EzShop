@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * 系统用户信息
@@ -52,4 +53,7 @@ public class SysUserInfoVO implements Serializable {
 
     @Schema(description = "更新时间")
     private Date updateTime;
+
+    @Schema(description = "角色ID列表")
+    private Set<Long> roleIds;
 }

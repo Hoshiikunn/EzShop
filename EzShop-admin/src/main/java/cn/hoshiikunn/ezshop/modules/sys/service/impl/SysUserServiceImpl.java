@@ -9,6 +9,7 @@ import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
+import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
@@ -44,6 +45,7 @@ import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.ENABLE;
 public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntity> implements SysUserService {
 
     private final TokenService tokenService;
+    private final SysUserRoleService userRoleService;
 
     @Override
     public SysUserEntity getUserEntityByUsername(String username) {
@@ -104,10 +106,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new BusinessException(USER_NOT_FOUND);
         }
 
-        return BeanUtil.toBean(userEntity, SysUserInfoVO.class);
+        SysUserInfoVO info = BeanUtil.toBean(userEntity, SysUserInfoVO.class);
+        info.setRoleIds(userRoleService.getRoleIdsByUserId(id));
+
+        return info;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SysUserInitVO addUser(SysUserDTO dto) {
         // 检查唯一性
         checkUnique(dto);
@@ -124,6 +130,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         userEntity.setPassword(BCrypt.hashpw(rawPassword));
         // 写库
         this.save(userEntity);
+        // 保存角色
+        userRoleService.saveOrUpdate(userEntity.getId(), dto.getRoleIds());
 
         // 响应初始用户信息
         SysUserInitVO vo = new SysUserInitVO();
@@ -133,6 +141,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateUser(SysUserDTO dto) {
         // 检查被修改的用户是否存在
         SysUserEntity userEntity = this.getById(dto.getId());
@@ -155,6 +164,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         if (!updated) {
             throw new BusinessException(USER_NOT_FOUND, "被修改的用户不存在");
         }
+        // 保存角色
+        userRoleService.saveOrUpdate(userEntity.getId(), dto.getRoleIds());
     }
 
     @Override
