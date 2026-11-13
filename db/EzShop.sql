@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/10 18:31:35                          */
+/* Created on:     2026/11/13 15:06:12                          */
 /*==============================================================*/
 
 
@@ -25,6 +25,8 @@ drop index uk_mobile on sys_user;
 drop index uk_username on sys_user;
 
 drop table if exists sys_user;
+
+drop index idx_role_id on sys_user_role;
 
 drop index uk_user_role on sys_user_role;
 
@@ -198,6 +200,14 @@ alter table sys_user_role comment '用户角色关联表';
 create unique index uk_user_role on sys_user_role
 (
    user_id,
+   role_id
+);
+
+/*==============================================================*/
+/* Index: idx_role_id                                           */
+/*==============================================================*/
+create index idx_role_id on sys_user_role
+(
    role_id
 );
 
