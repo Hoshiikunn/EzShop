@@ -2,8 +2,10 @@ package cn.hoshiikunn.ezshop.modules.sys.service.impl;
 
 import cn.hoshiikunn.ezshop.base.BaseServiceImpl;
 import cn.hoshiikunn.ezshop.exception.BusinessException;
+import cn.hoshiikunn.ezshop.modules.sys.dao.SysMenuDao;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysRoleMenuDao;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
+import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
@@ -12,13 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.enums.CommonStatusEnum.ENABLE;
+import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_ID_REQUIRED;
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_NOT_FOUND;
 
 /**
@@ -28,7 +28,7 @@ import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_NOT_FOUND;
 @RequiredArgsConstructor
 public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysRoleMenuEntity> implements SysRoleMenuService {
 
-    private final SysMenuService menuService;
+    private final SysMenuDao menuDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -39,11 +39,15 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
             return;
         }
 
+        // 防止 menuIds 中包含 null
+        if (menuIds.stream().anyMatch(Objects::isNull)) {
+            throw new BusinessException(MENU_ID_REQUIRED, "菜单ID不能为空");
+        }
+
         // 检查菜单是否可绑定
-        List<SysMenuEntity> menus = menuService.lambdaQuery()
+        List<SysMenuEntity> menus = menuDao.selectList(new LambdaQueryWrapper<SysMenuEntity>()
                 .in(SysMenuEntity::getId, menuIds)
-                .eq(SysMenuEntity::getStatus, ENABLE.getValue())
-                .list();
+                .eq(SysMenuEntity::getStatus, ENABLE.getValue()));
         if (menus.size() != menuIds.size()) {
             throw new BusinessException(MENU_NOT_FOUND, "菜单不存在或不可绑定");
         }

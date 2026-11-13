@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 用户参数
@@ -50,4 +51,7 @@ public class SysUserDTO implements Serializable {
     @Email(message = "邮箱格式错误")
     @Length(max = 100, message = "邮箱长度超限")
     private String email;
+
+    @Schema(description = "角色ID列表")
+    private Set<Long> roleIds;
 }

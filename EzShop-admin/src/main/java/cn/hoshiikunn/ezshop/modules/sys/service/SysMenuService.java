@@ -12,9 +12,9 @@ import java.util.List;
 public interface SysMenuService extends BaseService<SysMenuEntity> {
 
     /**
-     * 获取菜单树
+     * 获取全量菜单树
      *
-     * @return 菜单树
+     * @return 全量菜单树
      */
     List<SysMenuTreeVO> getMenuTree();
 }

@@ -9,6 +9,7 @@ import cn.hoshiikunn.ezshop.utils.TreeUtils;
 import cn.hutool.core.bean.BeanUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,9 +24,10 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
 
     @Override
     public List<SysMenuTreeVO> getMenuTree() {
-        // 查询启用菜单
+        // 查询全量菜单
         List<SysMenuEntity> menus = this.lambdaQuery()
-                .eq(SysMenuEntity::getStatus, ENABLE.getValue())
+                .orderByAsc(SysMenuEntity::getSort)
+                .orderByAsc(SysMenuEntity::getId)
                 .list();
 
         // 实体转换 VO
@@ -33,7 +35,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
                 .map(menu -> BeanUtil.toBean(menu, SysMenuTreeVO.class))
                 .collect(Collectors.toList());
 
-        // 组装树结构
+        // 组装全量菜单树
         return TreeUtils.build(
                 nodes,
                 SysMenuTreeVO::getId,
