@@ -6,8 +6,11 @@ import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleStatusDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import java.util.List;
 
 /**
  * 角色服务层
@@ -55,7 +58,14 @@ public interface SysRoleService extends BaseService<SysRoleEntity> {
     /**
      * 变更角色状态
      *
-     * @param dto
+     * @param dto 角色状态参数
      */
     void changeRoleStatus(SysRoleStatusDTO dto);
+
+    /**
+     * 获取全量角色列表
+     *
+     * @return 角色列表
+     */
+    List<SysRoleListVO> getRoleList();
 }

@@ -11,6 +11,7 @@ import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -22,7 +23,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.enums.CommonStatusEnum.ENABLE;
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
@@ -98,6 +100,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateRole(SysRoleDTO dto) {
         // 检查角色存在性
         SysRoleEntity roleEntity = this.getById(dto.getId());
@@ -177,5 +180,19 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
         if (!updated) {
             throw new BusinessException(ROLE_NOT_FOUND, "被变更的角色不存在");
         }
+    }
+
+    @Override
+    public List<SysRoleListVO> getRoleList() {
+        // 查询全量角色
+        List<SysRoleEntity> roles = this.lambdaQuery()
+                .orderByAsc(SysRoleEntity::getSort)
+                .orderByAsc(SysRoleEntity::getId)
+                .list();
+
+        // 实体转换 VO
+        return roles.stream()
+                .map(SysRoleListVO::of)
+                .collect(Collectors.toList());
     }
 }
