@@ -174,18 +174,15 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void batchDeleteUsers(List<Long> ids) {
-        // 去重
-        List<Long> distinctIds = ids.stream().distinct().collect(Collectors.toList());
-
+    public void batchDeleteUsers(Set<Long> ids) {
         // 数量比对
-        List<SysUserEntity> userEntityList = this.listByIds(distinctIds);
-        if (userEntityList.size() != distinctIds.size()) {
+        List<SysUserEntity> userEntityList = this.listByIds(ids);
+        if (userEntityList.size() != ids.size()) {
             throw new BusinessException(USER_NOT_FOUND, "部分用户不存在或已被删除，请刷新后重试");
         }
 
         // 不能删除当前登录账号
-        if (distinctIds.contains(SecurityUser.getUserId())) {
+        if (ids.contains(SecurityUser.getUserId())) {
             throw new BusinessException(USER_SELF_DELETE_FORBIDDEN);
         }
 
@@ -208,6 +205,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
                     .set(SysUserEntity::getDeleteTime, now);
             this.update(new SysUserEntity(), wrapper);
         }
+
+        // 解除用户角色绑定关系
+        userRoleService.deleteByUserIds(ids);
 
         // 立即失效被删用户的已签发令牌
         userEntityList.forEach(user -> tokenService.removeToken(user.getId()));

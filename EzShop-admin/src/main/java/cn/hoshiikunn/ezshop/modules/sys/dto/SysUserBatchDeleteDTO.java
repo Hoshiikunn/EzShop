@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Schema(description = "批量删除用户参数")
@@ -16,5 +16,5 @@ public class SysUserBatchDeleteDTO implements Serializable {
     @Schema(description = "用户ID列表", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty(message = "请选择要删除的用户")
     @Size(max = 100, message = "单次最多删除 100 个用户")
-    private List<Long> ids;
+    private Set<Long> ids;
 }

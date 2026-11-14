@@ -107,4 +107,14 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleDao, SysU
         }
         return baseMapper.selectRolesByUserId(userId);
     }
+
+    @Override
+    public void deleteByUserIds(Set<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return;
+        }
+
+        this.remove(new LambdaQueryWrapper<SysUserRoleEntity>()
+                .in(SysUserRoleEntity::getUserId, userIds));
+    }
 }
