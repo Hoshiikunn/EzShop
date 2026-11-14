@@ -2,8 +2,10 @@ package cn.hoshiikunn.ezshop.modules.sys.service;
 
 
 import cn.hoshiikunn.ezshop.base.BaseService;
+import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserRoleEntity;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +22,7 @@ public interface SysUserRoleService extends BaseService<SysUserRoleEntity> {
     long countByRoleId(Long id);
 
     /**
-     * 根据角色ID删除与用户的绑定
+     * 根据角色ID删除该角色与用户们的绑定
      *
      * @param id 角色ID
      */
@@ -35,17 +37,17 @@ public interface SysUserRoleService extends BaseService<SysUserRoleEntity> {
     void saveOrUpdate(Long userId, Set<Long> roleIds);
 
     /**
-     * 根据用户ID删除与角色的绑定
+     * 根据用户ID删除该用户绑定的角色
      *
      * @param id 用户ID
      */
     void deleteByUserId(Long id);
 
     /**
-     * 根据用户ID获取绑定的角色列表
+     * 获取用户所属的角色列表
      *
-     * @param id 用户ID
-     * @return 角色ID列表
+     * @param userId 用户ID
+     * @return 角色列表
      */
-    Set<Long> getRoleIdsByUserId(Long id);
+    List<SysRoleEntity> getRolesByUserId(Long userId);
 }
