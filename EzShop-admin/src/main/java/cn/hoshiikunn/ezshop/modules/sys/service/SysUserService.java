@@ -70,7 +70,7 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      *
      * @param ids 用户ID列表
      */
-    void batchDeleteUsers(List<Long> ids);
+    void batchDeleteUsers(Set<Long> ids);
 
     /**
      * 更改用户状态

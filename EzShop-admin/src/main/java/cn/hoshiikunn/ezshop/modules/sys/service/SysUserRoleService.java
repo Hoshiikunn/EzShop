@@ -50,4 +50,11 @@ public interface SysUserRoleService extends BaseService<SysUserRoleEntity> {
      * @return 角色列表
      */
     List<SysRoleEntity> getRolesByUserId(Long userId);
+
+    /**
+     * 根据用户ID集合批量删除用户角色绑定
+     *
+     * @param userIds 用户ID集合
+     */
+    void deleteByUserIds(Set<Long> userIds);
 }
