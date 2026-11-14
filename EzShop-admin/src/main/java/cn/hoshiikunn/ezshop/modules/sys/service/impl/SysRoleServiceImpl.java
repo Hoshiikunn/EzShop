@@ -6,10 +6,12 @@ import cn.hoshiikunn.ezshop.modules.sys.dao.SysRoleDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleStatusDTO;
+import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuBriefVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
@@ -68,9 +70,10 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
             throw new BusinessException(ROLE_NOT_FOUND);
         }
 
-        // 实体转换VO后 获取权限列表并填充
+        // 实体转换VO后 获取菜单列表并填充
         SysRoleInfoVO info = BeanUtil.toBean(roleEntity, SysRoleInfoVO.class);
-        info.setMenuIds(roleMenuService.getMenuIdsByRoleId(id));
+        List<SysMenuEntity> menus = roleMenuService.getMenusByRoleId(id);
+        info.setMenus(menus.stream().map(SysMenuBriefVO::of).collect(Collectors.toList()));
 
         return info;
     }

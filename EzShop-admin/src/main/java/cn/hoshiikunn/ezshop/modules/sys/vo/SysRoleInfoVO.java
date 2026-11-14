@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,4 +42,7 @@ public class SysRoleInfoVO implements Serializable {
 
     @Schema(description = "菜单ID列表")
     private Set<Long> menuIds;
+
+    @Schema(description = "已绑定菜单")
+    private List<SysMenuBriefVO> menus;
 }
