@@ -101,16 +101,10 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleDao, SysU
     }
 
     @Override
-    public Set<Long> getRoleIdsByUserId(Long userId) {
+    public List<SysRoleEntity> getRolesByUserId(Long userId) {
         if (userId == null) {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
-
-        return this.lambdaQuery()
-                .eq(SysUserRoleEntity::getUserId, userId)
-                .list()
-                .stream()
-                .map(SysUserRoleEntity::getRoleId)
-                .collect(Collectors.toSet());
+        return baseMapper.selectRolesByUserId(userId);
     }
 }
