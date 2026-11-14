@@ -8,9 +8,11 @@ import cn.hoshiikunn.ezshop.modules.sys.dao.SysUserDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserStatusDTO;
+import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleBriefVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
@@ -107,7 +109,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         }
 
         SysUserInfoVO info = BeanUtil.toBean(userEntity, SysUserInfoVO.class);
-        info.setRoleIds(userRoleService.getRoleIdsByUserId(id));
+        // 填充已绑定角色
+        List<SysRoleEntity> roles = userRoleService.getRolesByUserId(id);
+        info.setRoles(roles.stream().map(SysRoleBriefVO::of).collect(Collectors.toList()));
 
         return info;
     }
