@@ -74,10 +74,16 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
     }
 
     @Override
-    public List<SysMenuEntity> getMenusByRoleId(Long roleId) {
+    public Set<Long> getMenuIdsByRoleId(Long roleId) {
         if (roleId == null) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
-        return baseMapper.selectMenusByRoleId(roleId);
+
+        return this.lambdaQuery()
+                .eq(SysRoleMenuEntity::getRoleId, roleId)
+                .list()
+                .stream()
+                .map(SysRoleMenuEntity::getMenuId)
+                .collect(Collectors.toSet());
     }
 }
