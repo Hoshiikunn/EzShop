@@ -1,9 +1,11 @@
 package cn.hoshiikunn.ezshop.modules.sys.service.impl;
 
 import cn.hoshiikunn.ezshop.base.BaseServiceImpl;
+import cn.hoshiikunn.ezshop.exception.BusinessException;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysMenuDao;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import cn.hoshiikunn.ezshop.utils.TreeUtils;
 import cn.hutool.core.bean.BeanUtil;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.enums.CommonStatusEnum.ENABLE;
+import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_NOT_FOUND;
 
 /**
  * 菜单服务实现类
@@ -45,5 +48,15 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
                 Comparator.comparing(SysMenuTreeVO::getSort)
                         .thenComparing(SysMenuTreeVO::getId)
         );
+    }
+
+    @Override
+    public SysMenuInfoVO getMenuInfo(Long menuId) {
+        SysMenuEntity menuEntity = this.getById(menuId);
+        if (menuEntity == null) {
+            throw new BusinessException(MENU_NOT_FOUND);
+        }
+
+        return BeanUtil.toBean(menuEntity, SysMenuInfoVO.class);
     }
 }
