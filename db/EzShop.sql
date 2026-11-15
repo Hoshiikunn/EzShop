@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/13 15:06:12                          */
+/* Created on:     2026/11/15 23:49:09                          */
 /*==============================================================*/
 
 
@@ -48,7 +48,6 @@ create table sys_menu
    sort                 int not null default 0 comment '排序',
    visible              tinyint not null default 1 comment '可见性 0-隐藏 1-显示',
    open_style           tinyint not null default 0 comment '打开方式 0-内部打开 1-外部打开',
-   status               tinyint not null default 1 comment '状态 0-禁用 1-启用',
    creator              bigint comment '创建者',
    create_time          datetime comment '创建时间',
    updater              bigint comment '更新者',
