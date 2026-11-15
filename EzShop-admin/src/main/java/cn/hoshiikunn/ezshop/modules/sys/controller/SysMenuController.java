@@ -1,18 +1,18 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysMenuDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import cn.hoshiikunn.ezshop.result.Result;
+import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
+import cn.hoshiikunn.ezshop.validation.group.AddGroup;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,5 +52,16 @@ public class SysMenuController {
         List<SysMenuListVO> menus = menuService.getMenuList();
 
         return new Result<List<SysMenuListVO>>().ok(menus);
+    }
+
+    @PostMapping("/add")
+    @Operation(summary = "新增菜单")
+    @RequiresPermissions("sys:menu:add")
+    public Result<Void> add(@RequestBody SysMenuDTO dto) {
+        ValidatorUtils.validateEntity(dto, AddGroup.class);
+
+        menuService.addMenu(dto);
+
+        return new Result<Void>().ok(null, "添加成功");
     }
 }

@@ -47,9 +47,6 @@ public class SysMenuInfoVO implements Serializable {
     @Schema(description = "打开方式 0-内部 1-外部")
     private Integer openStyle;
 
-    @Schema(description = "状态 0-禁用 1-启用")
-    private Integer status;
-
     @Schema(description = "创建时间")
     private Date createTime;
 

@@ -62,9 +62,4 @@ public class SysMenuEntity extends BaseEntity {
      * 打开方式 0-内部打开 1-外部打开
      */
     private Integer openStyle;
-
-    /**
-     * 状态 0-禁用 1-启用
-     */
-    private Integer status;
 }

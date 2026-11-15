@@ -1,6 +1,7 @@
 package cn.hoshiikunn.ezshop.modules.sys.service;
 
 import cn.hoshiikunn.ezshop.base.BaseService;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysMenuDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
@@ -34,4 +35,11 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
      * @return 菜单列表
      */
     List<SysMenuListVO> getMenuList();
+
+    /**
+     * 添加菜单
+     *
+     * @param dto 菜单参数
+     */
+    void addMenu(SysMenuDTO dto);
 }
