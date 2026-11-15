@@ -46,8 +46,7 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
 
         // 检查菜单是否可绑定
         List<SysMenuEntity> menus = menuDao.selectList(new LambdaQueryWrapper<SysMenuEntity>()
-                .in(SysMenuEntity::getId, menuIds)
-                .eq(SysMenuEntity::getStatus, ENABLE.getValue()));
+                .in(SysMenuEntity::getId, menuIds));
         if (menus.size() != menuIds.size()) {
             throw new BusinessException(MENU_NOT_FOUND, "菜单不存在或不可绑定");
         }

@@ -45,9 +45,6 @@ public class SysMenuListVO implements Serializable {
     @Schema(description = "可见性 0-隐藏 1-显示")
     private Integer visible;
 
-    @Schema(description = "状态 0-禁用 1-启用")
-    private Integer status;
-
     /**
      * 实体 转 VO
      */

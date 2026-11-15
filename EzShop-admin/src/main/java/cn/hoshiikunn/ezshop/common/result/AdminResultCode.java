@@ -43,6 +43,10 @@ public enum AdminResultCode implements IResultCode {
     // ==================== 菜单模块 - 104 ====================
     MENU_NOT_FOUND(104001, "菜单不存在"),
     MENU_ID_REQUIRED(104002, "菜单ID不能为空"),
+    MENU_NAME_EXISTS(104003, "同级菜单名称已存在"),
+    MENU_TYPE_MISMATCH(104004, "菜单类型与挂载位置不匹配"),
+    MENU_PERMS_REQUIRED(104005, "按钮节点权限标识为必填项"),
+    MENU_PERMS_NOT_ALLOWED(104006, "该类型菜单不可设置权限标识"),
 
     ;
 

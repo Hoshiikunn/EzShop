@@ -18,7 +18,6 @@
                  JOIN sys_menu m ON m.id = rm.menu_id
         WHERE ur.user_id = #{userId}
           AND r.status = 1
-          AND m.status = 1
           AND m.perms IS NOT NULL
     </select>
 
