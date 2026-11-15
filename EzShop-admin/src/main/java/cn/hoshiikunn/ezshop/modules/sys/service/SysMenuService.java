@@ -3,6 +3,7 @@ package cn.hoshiikunn.ezshop.modules.sys.service;
 import cn.hoshiikunn.ezshop.base.BaseService;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 
 import java.util.List;
@@ -26,4 +27,11 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
      * @return 菜单信息
      */
     SysMenuInfoVO getMenuInfo(Long menuId);
+
+    /**
+     * 获取菜单列表
+     *
+     * @return 菜单列表
+     */
+    List<SysMenuListVO> getMenuList();
 }

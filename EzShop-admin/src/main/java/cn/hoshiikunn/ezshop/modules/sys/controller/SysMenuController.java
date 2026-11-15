@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.modules.sys.controller;
 
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,5 +43,14 @@ public class SysMenuController {
         SysMenuInfoVO vo = menuService.getMenuInfo(id);
 
         return new Result<SysMenuInfoVO>().ok(vo);
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "菜单列表")
+    @RequiresPermissions("sys:menu:list")
+    public Result<List<SysMenuListVO>> list() {
+        List<SysMenuListVO> menus = menuService.getMenuList();
+
+        return new Result<List<SysMenuListVO>>().ok(menus);
     }
 }

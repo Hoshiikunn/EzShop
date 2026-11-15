@@ -6,6 +6,7 @@ import cn.hoshiikunn.ezshop.modules.sys.dao.SysMenuDao;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import cn.hoshiikunn.ezshop.utils.TreeUtils;
 import cn.hutool.core.bean.BeanUtil;
@@ -58,5 +59,19 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         }
 
         return BeanUtil.toBean(menuEntity, SysMenuInfoVO.class);
+    }
+
+    @Override
+    public List<SysMenuListVO> getMenuList() {
+        // 查询全量菜单
+        List<SysMenuEntity> menus = this.lambdaQuery()
+                .orderByAsc(SysMenuEntity::getSort)
+                .orderByAsc(SysMenuEntity::getId)
+                .list();
+
+        // 实体转换 VO
+        return menus.stream()
+                .map(SysMenuListVO::of)
+                .collect(Collectors.toList());
     }
 }
