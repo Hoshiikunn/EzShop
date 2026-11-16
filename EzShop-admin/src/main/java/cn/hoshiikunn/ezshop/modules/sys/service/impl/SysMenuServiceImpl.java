@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
@@ -117,6 +119,68 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         this.save(entity);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateMenu(SysMenuDTO dto) {
+        // 菜单存在性
+        SysMenuEntity oldEntity = this.getById(dto.getId());
+        if (oldEntity == null) {
+            throw new BusinessException(MENU_NOT_FOUND, "被修改的菜单不存在");
+        }
+
+        // 菜单类型不可变更
+        if (!oldEntity.getMenuType().equals(dto.getMenuType())) {
+            throw new BusinessException(MENU_TYPE_NOT_MODIFIABLE);
+        }
+
+        // 更换父菜单，根节点允许目录(M)与菜单(C)，按钮(F)不可挂根
+        SysMenuEntity newParent = null;
+        if (dto.getPid() == 0L) {
+            if (BUTTON.getValue().equals(dto.getMenuType())) {
+                throw new BusinessException(MENU_TYPE_MISMATCH);
+            }
+        } else if (!oldEntity.getPid().equals(dto.getPid())) {
+            newParent = this.getById(dto.getPid());
+            if (newParent == null) {
+                throw new BusinessException(MENU_NOT_FOUND, "父菜单不存在");
+            }
+            validateParentChildRelation(newParent.getMenuType(), dto.getMenuType());
+        }
+
+        // 类型字段约束 + 修改场景校验
+        MenuValidator validator = validatorRegistry.getValidator(dto.getMenuType());
+        validator.validateFields(dto);
+        validator.validateOnUpdate(dto, oldEntity, newParent);
+
+        // 防环，新父不能是自身或自身后代
+        if (newParent != null && checkParentCycle(dto.getId(), dto.getPid())) {
+            throw new BusinessException(MENU_PARENT_CYCLE);
+        }
+
+        // 同级名称唯一
+        checkSameLevelMenuName(dto);
+
+        // 写库
+        SysMenuEntity updateEntity = BeanUtil.toBean(dto, SysMenuEntity.class);
+        this.updateById(updateEntity);
+    }
+
+    /**
+     * 防环，沿新父的祖先链上溯，命中自身即成环
+     */
+    private boolean checkParentCycle(Long menuId, Long newPid) {
+        Long currentId = newPid;
+        Set<Long> visited = new HashSet<>();
+        while (currentId != null && currentId != 0L && visited.add(currentId)) {
+            if (menuId.equals(currentId)) {
+                return true;
+            }
+            SysMenuEntity ancestor = this.getById(currentId);
+            currentId = ancestor == null ? null : ancestor.getPid();
+        }
+        return false;
+    }
+
     /**
      * 校验父子类型约束
      *
@@ -147,6 +211,8 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         long nameCount = this.lambdaQuery()
                 .eq(SysMenuEntity::getPid, dto.getPid())
                 .eq(SysMenuEntity::getMenuName, dto.getMenuName())
+                // 修改场景
+                .ne(dto.getId() != null, SysMenuEntity::getId, dto.getId())
                 .count();
         if (nameCount > 0) {
             throw new BusinessException(MENU_NAME_EXISTS);

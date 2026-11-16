@@ -8,6 +8,7 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
+import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -55,13 +56,24 @@ public class SysMenuController {
     }
 
     @PostMapping("/add")
-    @Operation(summary = "新增菜单")
+    @Operation(summary = "添加菜单")
     @RequiresPermissions("sys:menu:add")
-    public Result<Void> add(@RequestBody SysMenuDTO dto) {
+    public Result<?> add(@RequestBody SysMenuDTO dto) {
         ValidatorUtils.validateEntity(dto, AddGroup.class);
 
         menuService.addMenu(dto);
 
-        return new Result<Void>().ok(null, "添加成功");
+        return new Result<>().ok(null, "添加成功");
+    }
+
+    @PutMapping("/update")
+    @Operation(summary = "修改菜单")
+    @RequiresPermissions("sys:menu:update")
+    public Result<?> update(@RequestBody SysMenuDTO dto) {
+        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
+
+        menuService.updateMenu(dto);
+
+        return new Result<>().ok(null, "修改成功");
     }
 }

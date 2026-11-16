@@ -42,4 +42,11 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
      * @param dto 菜单参数
      */
     void addMenu(SysMenuDTO dto);
+
+    /**
+     * 修改菜单
+     *
+     * @param dto 菜单参数
+     */
+    void updateMenu(SysMenuDTO dto);
 }
