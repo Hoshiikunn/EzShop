@@ -73,7 +73,8 @@ public class JwtRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roleKeys);
 
-        // 若是超级管理员，就赋予全部权限 TODO: 每次请求都会查 SQL 获取用户信息
+        // 若是超级管理员，就赋予全部权限
+        // TODO: 每次请求都会查 SQL 获取用户信息，可将 isSuperAdmin 字段放入 JWT 中以省略该 SQL
         SysUserEntity user = userService.getById(userId);
         if (user.getIsSuperAdmin().equals(IS_SUPER_ADMIN.getValue())) {
             info.addStringPermission("*");

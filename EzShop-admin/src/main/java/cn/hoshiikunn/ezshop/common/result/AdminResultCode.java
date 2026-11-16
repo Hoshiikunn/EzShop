@@ -47,6 +47,8 @@ public enum AdminResultCode implements IResultCode {
     MENU_TYPE_MISMATCH(104004, "菜单类型与挂载位置不匹配"),
     MENU_PERMS_REQUIRED(104005, "按钮节点权限标识为必填项"),
     MENU_PERMS_NOT_ALLOWED(104006, "该类型菜单不可设置权限标识"),
+    MENU_TYPE_NOT_MODIFIABLE(104007, "菜单类型不可修改"),
+    MENU_PARENT_CYCLE(104008, "上级菜单不能选择自身或自身的下级菜单"),
 
     ;
 
