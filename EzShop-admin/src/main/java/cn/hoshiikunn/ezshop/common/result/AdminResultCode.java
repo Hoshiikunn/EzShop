@@ -49,6 +49,7 @@ public enum AdminResultCode implements IResultCode {
     MENU_PERMS_NOT_ALLOWED(104006, "该类型菜单不可设置权限标识"),
     MENU_TYPE_NOT_MODIFIABLE(104007, "菜单类型不可修改"),
     MENU_PARENT_CYCLE(104008, "上级菜单不能选择自身或自身的下级菜单"),
+    MENU_HAS_CHILDREN(104009, "存在子菜单，不可删除"),
 
     ;
 

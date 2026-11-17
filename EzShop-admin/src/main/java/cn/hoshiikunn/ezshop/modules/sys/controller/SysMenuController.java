@@ -76,4 +76,13 @@ public class SysMenuController {
 
         return new Result<>().ok(null, "修改成功");
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除菜单")
+    @RequiresPermissions("sys:menu:delete")
+    public Result<?> delete(@PathVariable Long id) {
+        menuService.deleteMenu(id);
+
+        return new Result<>().ok(null, "删除成功");
+    }
 }

@@ -85,4 +85,11 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
                 .map(SysRoleMenuEntity::getMenuId)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByMenuId(Long menuId) {
+        this.remove(new LambdaQueryWrapper<SysRoleMenuEntity>()
+                .eq(SysRoleMenuEntity::getMenuId, menuId));
+    }
 }
