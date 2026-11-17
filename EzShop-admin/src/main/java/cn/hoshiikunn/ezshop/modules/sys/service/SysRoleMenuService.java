@@ -13,7 +13,7 @@ public interface SysRoleMenuService extends BaseService<SysRoleMenuEntity> {
     /**
      * 保存或更新角色菜单关系
      *
-     * @param roleId     角色ID
+     * @param roleId  角色ID
      * @param menuIds 菜单ID列表
      */
     void saveOrUpdate(Long roleId, Set<Long> menuIds);
@@ -32,4 +32,11 @@ public interface SysRoleMenuService extends BaseService<SysRoleMenuEntity> {
      * @return 菜单ID集合
      */
     Set<Long> getMenuIdsByRoleId(Long id);
+
+    /**
+     * 根据菜单ID删除角色菜单关系
+     *
+     * @param menuId 菜单ID
+     */
+    void deleteByMenuId(Long menuId);
 }

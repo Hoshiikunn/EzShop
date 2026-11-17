@@ -49,4 +49,11 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
      * @param dto 菜单参数
      */
     void updateMenu(SysMenuDTO dto);
+
+    /**
+     * 删除菜单
+     *
+     * @param id 菜单ID
+     */
+    void deleteMenu(Long id);
 }

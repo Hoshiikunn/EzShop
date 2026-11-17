@@ -6,6 +6,7 @@ import cn.hoshiikunn.ezshop.modules.sys.dao.SysMenuDao;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysMenuDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
+import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.validator.MenuValidator;
 import cn.hoshiikunn.ezshop.modules.sys.validator.MenuValidatorRegistry;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
@@ -34,6 +35,7 @@ import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.*;
 public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntity> implements SysMenuService {
 
     private final MenuValidatorRegistry validatorRegistry;
+    private final SysRoleMenuService roleMenuService;
 
     @Override
     public List<SysMenuTreeVO> getMenuTree() {
@@ -163,6 +165,30 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         // 写库
         SysMenuEntity updateEntity = BeanUtil.toBean(dto, SysMenuEntity.class);
         this.updateById(updateEntity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteMenu(Long id) {
+        // 菜单存在性
+        SysMenuEntity entity = this.getById(id);
+        if (entity == null) {
+            throw new BusinessException(MENU_NOT_FOUND);
+        }
+
+        // 存在子菜单不允许删除
+        long childCount = this.lambdaQuery()
+                .eq(SysMenuEntity::getPid, id)
+                .count();
+        if (childCount > 0) {
+            throw new BusinessException(MENU_HAS_CHILDREN);
+        }
+
+        // 删除菜单
+        this.removeById(id);
+
+        // 同步删除角色绑定
+        roleMenuService.deleteByMenuId(id);
     }
 
     /**
