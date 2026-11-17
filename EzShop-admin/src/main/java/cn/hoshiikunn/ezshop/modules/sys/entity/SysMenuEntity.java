@@ -24,7 +24,7 @@ public class SysMenuEntity extends BaseEntity {
     private String menuName;
 
     /**
-     * 菜单类型 M-目录 C-菜单 F-按钮
+     * 菜单类型 M-目录 C-菜单 F-权限
      */
     private String menuType;
 

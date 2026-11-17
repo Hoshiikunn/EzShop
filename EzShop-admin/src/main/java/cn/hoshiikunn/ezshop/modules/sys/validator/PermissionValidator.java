@@ -8,23 +8,23 @@ import org.springframework.stereotype.Component;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_PERMS_REQUIRED;
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_TYPE_MISMATCH;
-import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.BUTTON;
+import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.PERMISSION;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.MENU;
 
 /**
- * 按钮类型校验器
+ * 权限节点校验器
  */
 @Component
-public class ButtonValidator implements MenuValidator {
+public class PermissionValidator implements MenuValidator {
 
     @Override
     public String getMenuType() {
-        return BUTTON.getValue();
+        return PERMISSION.getValue();
     }
 
     @Override
     public void validateFields(SysMenuDTO dto) {
-        // 按钮必须设置权限标识
+        // 权限节点必须设置权限标识
         if (StrUtil.isBlank(dto.getPerms())) {
             throw new BusinessException(MENU_PERMS_REQUIRED);
         }

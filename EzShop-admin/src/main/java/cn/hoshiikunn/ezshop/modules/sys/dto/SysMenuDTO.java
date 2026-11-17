@@ -35,7 +35,7 @@ public class SysMenuDTO implements Serializable {
     @Length(max = 50, message = "菜单名称长度不可超过 50 字符")
     private String menuName;
 
-    @Schema(description = "菜单类型 M-目录 C-菜单 F-按钮", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "菜单类型 M-目录 C-菜单 F-权限", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "菜单类型为必填项")
     @Pattern(regexp = "^[MCF]$", message = "菜单类型只能是 M / C / F")
     private String menuType;

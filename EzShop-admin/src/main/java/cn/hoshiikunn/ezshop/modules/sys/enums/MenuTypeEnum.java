@@ -21,9 +21,9 @@ public enum MenuTypeEnum {
     MENU("C"),
 
     /**
-     * 按钮
+     * 权限
      */
-    BUTTON("F");
+    PERMISSION("F");
 
     private final String value;
 }

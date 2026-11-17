@@ -87,9 +87,9 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addMenu(SysMenuDTO dto) {
-        // 根菜单校验，根节点允许目录(M)与菜单(C)，按钮(F)不可挂根
+        // 根菜单校验，根节点允许目录(M)与菜单(C)，权限(F)不可挂根
         if (dto.getPid() == 0L) {
-            if (BUTTON.getValue().equals(dto.getMenuType())) {
+            if (PERMISSION.getValue().equals(dto.getMenuType())) {
                 throw new BusinessException(MENU_TYPE_MISMATCH);
             }
             // 字段约束校验
@@ -101,7 +101,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
                 throw new BusinessException(MENU_NOT_FOUND);
             }
 
-            // 父子类型约束，目录下挂菜单、菜单下挂按钮、按钮不可挂载子节点
+            // 父子类型约束，目录下挂菜单、菜单下挂权限、权限不可挂载子节点
             validateParentChildRelation(parent.getMenuType(), dto.getMenuType());
 
             // 字段约束校验 + 新增场景校验
@@ -133,10 +133,10 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
             throw new BusinessException(MENU_TYPE_NOT_MODIFIABLE);
         }
 
-        // 更换父菜单，根节点允许目录(M)与菜单(C)，按钮(F)不可挂根
+        // 更换父菜单，根节点允许目录(M)与菜单(C)，权限(F)不可挂根
         SysMenuEntity newParent = null;
         if (dto.getPid() == 0L) {
-            if (BUTTON.getValue().equals(dto.getMenuType())) {
+            if (PERMISSION.getValue().equals(dto.getMenuType())) {
                 throw new BusinessException(MENU_TYPE_MISMATCH);
             }
         } else if (!oldEntity.getPid().equals(dto.getPid())) {
@@ -192,12 +192,12 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         if (DIRECTORY.getValue().equals(parentType) && !MENU.getValue().equals(childType)) {
             throw new BusinessException(MENU_TYPE_MISMATCH);
         }
-        // 菜单下只能挂按钮
-        if (MENU.getValue().equals(parentType) && !BUTTON.getValue().equals(childType)) {
+        // 菜单下只能挂权限
+        if (MENU.getValue().equals(parentType) && !PERMISSION.getValue().equals(childType)) {
             throw new BusinessException(MENU_TYPE_MISMATCH);
         }
-        // 按钮不可挂载子节点
-        if (BUTTON.getValue().equals(parentType)) {
+        // 权限不可挂载子节点
+        if (PERMISSION.getValue().equals(parentType)) {
             throw new BusinessException(MENU_TYPE_MISMATCH);
         }
     }
