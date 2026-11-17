@@ -11,7 +11,7 @@ public interface MenuValidator {
     /**
      * 获取该校验器支持的菜单类型
      *
-     * @return 菜单类型值 (M-目录 C-菜单 F-按钮)
+     * @return 菜单类型值 (M-目录 C-菜单 F-权限)
      */
     String getMenuType();
 

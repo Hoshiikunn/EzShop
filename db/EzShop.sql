@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/15 23:49:09                          */
+/* Created on:     2026/11/17 14:25:27                          */
 /*==============================================================*/
 
 
@@ -40,7 +40,7 @@ create table sys_menu
    id                   bigint not null comment '菜单ID',
    pid                  bigint not null default 0 comment '父菜单ID',
    menu_name            varchar(50) not null comment '菜单名称',
-   menu_type            char(1) not null comment '菜单类型 M-目录 C-菜单 F-按钮',
+   menu_type            char(1) not null comment '菜单类型 M-目录 C-菜单 F-权限',
    path                 varchar(255) comment '路由地址',
    component            varchar(255) comment '组件路径',
    perms                varchar(255) comment '权限标识',
