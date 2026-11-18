@@ -6,7 +6,7 @@ import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleMenuEntity;
 import java.util.Set;
 
 /**
- * 角色菜单服务层
+ * 角色菜单关系 业务接口
  */
 public interface SysRoleMenuService extends BaseService<SysRoleMenuEntity> {
 
@@ -39,4 +39,12 @@ public interface SysRoleMenuService extends BaseService<SysRoleMenuEntity> {
      * @param menuId 菜单ID
      */
     void deleteByMenuId(Long menuId);
+
+    /**
+     * 获取用户绑定的菜单集合
+     *
+     * @param userId 用户ID
+     * @return 菜单ID集合
+     */
+    Set<Long> getMenuIdsByUserId(Long userId);
 }

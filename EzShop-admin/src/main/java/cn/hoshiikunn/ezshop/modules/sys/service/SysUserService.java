@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 系统用户服务层
+ * 系统用户业务接口
  */
 public interface SysUserService extends BaseService<SysUserEntity> {
 

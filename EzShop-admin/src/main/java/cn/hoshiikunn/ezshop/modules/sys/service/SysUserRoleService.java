@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 用户角色服务层
+ * 用户角色关系 业务接口
  */
 public interface SysUserRoleService extends BaseService<SysUserRoleEntity> {
 

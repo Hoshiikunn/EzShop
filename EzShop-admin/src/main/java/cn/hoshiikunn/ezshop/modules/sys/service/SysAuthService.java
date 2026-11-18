@@ -2,11 +2,13 @@ package cn.hoshiikunn.ezshop.modules.sys.service;
 
 import cn.hoshiikunn.ezshop.modules.sys.dto.LoginDTO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.LoginTokenVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
- * 系统认证服务层
+ * 认证业务接口
  */
 public interface SysAuthService {
 
@@ -23,4 +25,11 @@ public interface SysAuthService {
      * 登出
      */
     void logout();
+
+    /**
+     * 获取导航菜单
+     *
+     * @return 导航菜单树
+     */
+    List<SysMenuTreeVO> getNavMenus();
 }

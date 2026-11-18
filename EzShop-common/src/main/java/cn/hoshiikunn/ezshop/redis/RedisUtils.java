@@ -5,7 +5,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -31,6 +33,32 @@ public class RedisUtils {
      */
     public Object get(String key) {
         return redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 获取缓存集合
+     *
+     * @param key         缓存键
+     * @param elementType 集合元素类型
+     * @param <T>         集合元素类型
+     * @return 缓存集合 (键不存在或缓存类型不匹配时返回 null)
+     */
+    public <T> List<T> getList(String key, Class<T> elementType) {
+        Object cached = redisTemplate.opsForValue().get(key);
+        if (!(cached instanceof List)) {
+            return null;
+        }
+
+        List<?> cachedList = (List<?>) cached;
+        List<T> result = new ArrayList<>(cachedList.size());
+        for (Object item : cachedList) {
+            if (!elementType.isInstance(item)) {
+                return null;
+            }
+            result.add(elementType.cast(item));
+        }
+
+        return result;
     }
 
     /**

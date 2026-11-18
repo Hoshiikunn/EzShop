@@ -30,7 +30,7 @@ import static cn.hoshiikunn.ezshop.common.enums.CommonStatusEnum.ENABLE;
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
 
 /**
- * 角色服务实现类
+ * 角色业务实现类
  */
 @Service
 @RequiredArgsConstructor
