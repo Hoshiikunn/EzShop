@@ -92,4 +92,9 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
         this.remove(new LambdaQueryWrapper<SysRoleMenuEntity>()
                 .eq(SysRoleMenuEntity::getMenuId, menuId));
     }
+
+    @Override
+    public Set<Long> getMenuIdsByUserId(Long userId) {
+        return menuDao.selectMenuIdsByUserId(userId);
+    }
 }
