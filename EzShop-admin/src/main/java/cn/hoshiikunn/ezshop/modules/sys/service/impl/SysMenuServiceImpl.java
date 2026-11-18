@@ -27,7 +27,7 @@ import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.*;
 
 /**
- * 菜单服务实现类
+ * 菜单业务实现类
  */
 @Service
 @RequiredArgsConstructor

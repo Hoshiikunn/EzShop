@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 
 /**
- * 角色服务层
+ * 角色业务接口
  */
 public interface SysRoleService extends BaseService<SysRoleEntity> {
 

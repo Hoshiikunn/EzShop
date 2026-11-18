@@ -6,7 +6,7 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.LoginTokenVO;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 系统认证服务层
+ * 认证业务接口
  */
 public interface SysAuthService {
 

@@ -40,7 +40,7 @@ import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.DISABLE;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.ENABLE;
 
 /**
- * 系统用户服务实现类
+ * 系统用户业务实现类
  */
 @Service
 @RequiredArgsConstructor

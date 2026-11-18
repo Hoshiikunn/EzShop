@@ -24,7 +24,7 @@ import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.ROLE_ID_REQUIRE
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.ROLE_NOT_FOUND;
 
 /**
- * 用户角色服务实现类
+ * 用户角色关系 业务实现类
  */
 @Service
 @RequiredArgsConstructor

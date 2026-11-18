@@ -22,7 +22,7 @@ import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_ID_REQUIRE
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_NOT_FOUND;
 
 /**
- * 角色菜单服务实现类
+ * 角色菜单关系 业务实现类
  */
 @Service
 @RequiredArgsConstructor

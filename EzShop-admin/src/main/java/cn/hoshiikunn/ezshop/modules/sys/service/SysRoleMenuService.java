@@ -6,7 +6,7 @@ import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleMenuEntity;
 import java.util.Set;
 
 /**
- * 角色菜单服务层
+ * 角色菜单关系 业务接口
  */
 public interface SysRoleMenuService extends BaseService<SysRoleMenuEntity> {
 

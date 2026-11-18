@@ -10,7 +10,7 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import java.util.List;
 
 /**
- * 菜单服务层
+ * 菜单业务接口
  */
 public interface SysMenuService extends BaseService<SysMenuEntity> {
 

@@ -21,6 +21,9 @@ import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.USER_DISABLED;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.SysUserStatusEnum.DISABLE;
 import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
 
+/**
+ * 认证业务实现类
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
