@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.vo;
 
+import cn.hoshiikunn.ezshop.tree.TreeNode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 @Data
 @Schema(description = "菜单树")
-public class SysMenuTreeVO implements Serializable {
+public class SysMenuTreeVO implements TreeNode<SysMenuTreeVO>, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "菜单ID")

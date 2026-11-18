@@ -12,13 +12,12 @@ import cn.hoshiikunn.ezshop.modules.sys.validator.MenuValidatorRegistry;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
-import cn.hoshiikunn.ezshop.utils.TreeUtils;
+import cn.hoshiikunn.ezshop.tree.TreeUtils;
 import cn.hutool.core.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,15 +50,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
                 .collect(Collectors.toList());
 
         // 组装全量菜单树
-        return TreeUtils.build(
-                nodes,
-                SysMenuTreeVO::getId,
-                SysMenuTreeVO::getPid,
-                (parent, child) -> parent.getChildren().add(child),
-                pid -> pid == null || pid == 0L,
-                Comparator.comparing(SysMenuTreeVO::getSort)
-                        .thenComparing(SysMenuTreeVO::getId)
-        );
+        return TreeUtils.buildTree(nodes);
     }
 
     @Override
