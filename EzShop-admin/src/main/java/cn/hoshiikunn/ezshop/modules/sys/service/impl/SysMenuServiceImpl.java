@@ -12,12 +12,14 @@ import cn.hoshiikunn.ezshop.modules.sys.validator.MenuValidatorRegistry;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
+import cn.hoshiikunn.ezshop.redis.RedisUtils;
 import cn.hoshiikunn.ezshop.tree.TreeUtils;
 import cn.hutool.core.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,22 +37,15 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
 
     private final MenuValidatorRegistry validatorRegistry;
     private final SysRoleMenuService roleMenuService;
+    private final RedisUtils redisUtils;
 
     @Override
     public List<SysMenuTreeVO> getMenuTree() {
-        // 查询全量菜单
-        List<SysMenuEntity> menus = this.lambdaQuery()
-                .orderByAsc(SysMenuEntity::getSort)
-                .orderByAsc(SysMenuEntity::getId)
-                .list();
-
-        // 实体转换 VO
-        List<SysMenuTreeVO> nodes = menus.stream()
-                .map(menu -> BeanUtil.toBean(menu, SysMenuTreeVO.class))
-                .collect(Collectors.toList());
+        // 查全量菜单
+        List<SysMenuEntity> menus = listAllMenus();
 
         // 组装全量菜单树
-        return TreeUtils.buildTree(nodes);
+        return TreeUtils.buildTree(BeanUtil.copyToList(menus, SysMenuTreeVO.class));
     }
 
     @Override
@@ -65,16 +60,11 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
 
     @Override
     public List<SysMenuListVO> getMenuList() {
-        // 查询全量菜单
-        List<SysMenuEntity> menus = this.lambdaQuery()
-                .orderByAsc(SysMenuEntity::getSort)
-                .orderByAsc(SysMenuEntity::getId)
-                .list();
+        // 查全量菜单
+        List<SysMenuEntity> menus = listAllMenus();
 
         // 实体转换 VO
-        return menus.stream()
-                .map(SysMenuListVO::of)
-                .collect(Collectors.toList());
+        return BeanUtil.copyToList(menus, SysMenuListVO.class);
     }
 
     @Override
@@ -234,5 +224,28 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         if (nameCount > 0) {
             throw new BusinessException(MENU_NAME_EXISTS);
         }
+    }
+
+    /**
+     * 列出所有菜单
+     *
+     * @return 所有菜单
+     */
+    private List<SysMenuEntity> listAllMenus() {
+        // 查缓存 命中则返回
+        List<SysMenuEntity> cachedMenus = redisUtils.getList("sys:menu:all", SysMenuEntity.class);
+        if (cachedMenus != null) {
+            return cachedMenus;
+        }
+
+        // 未命中 查数据库
+        List<SysMenuEntity> menus = this.lambdaQuery()
+                .orderByAsc(SysMenuEntity::getSort)
+                .orderByAsc(SysMenuEntity::getId)
+                .list();
+
+        // 写入缓存并返回
+        redisUtils.set("sys:menu:all", menus, Duration.ofHours(1));
+        return menus;
     }
 }
