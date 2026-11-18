@@ -40,7 +40,7 @@ public class SysRoleController {
 
         Page<SysRolePageVO> rolePage = roleService.pageRole(dto);
 
-        return new Result<Page<SysRolePageVO>>().ok(rolePage);
+        return Result.ok(rolePage);
     }
 
     @GetMapping("/{id}")
@@ -49,7 +49,7 @@ public class SysRoleController {
     public Result<SysRoleInfoVO> info(@PathVariable Long id) {
         SysRoleInfoVO roleInfo = roleService.getRoleInfo(id);
 
-        return new Result<SysRoleInfoVO>().ok(roleInfo);
+        return Result.ok(roleInfo);
     }
 
     @GetMapping("/list")
@@ -58,51 +58,51 @@ public class SysRoleController {
     public Result<List<SysRoleListVO>> list() {
         List<SysRoleListVO> roles = roleService.getRoleList();
 
-        return new Result<List<SysRoleListVO>>().ok(roles);
+        return Result.ok(roles);
     }
 
     @PostMapping("/add")
     @Operation(summary = "添加角色")
     @RequiresPermissions("sys:role:add")
-    public Result<?> add(@RequestBody SysRoleDTO dto) {
+    public Result<Void> add(@RequestBody SysRoleDTO dto) {
         ValidatorUtils.validateEntity(dto, AddGroup.class);
 
         roleService.addRole(dto);
 
-        return new Result<>().ok(null, "添加成功");
+        return Result.ok(null, "添加成功");
     }
 
     @PutMapping("/update")
     @Operation(summary = "修改角色")
     @RequiresPermissions("sys:role:update")
-    public Result<?> update(@RequestBody SysRoleDTO dto) {
+    public Result<Void> update(@RequestBody SysRoleDTO dto) {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class);
 
         roleService.updateRole(dto);
 
-        return new Result<>().ok(null, "修改成功");
+        return Result.ok(null, "修改成功");
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除角色")
     @RequiresPermissions("sys:role:delete")
-    public Result<?> delete(
+    public Result<Void> delete(
             @PathVariable Long id,
             @RequestParam(name = "force", defaultValue = "false") boolean force) {
 
         roleService.deleteRole(id, force);
 
-        return new Result<>().ok(null, "删除成功");
+        return Result.ok(null, "删除成功");
     }
 
     @PostMapping("/change/status")
     @Operation(summary = "变更角色状态")
     @RequiresPermissions("sys:role:status")
-    public Result<?> changeStatus(@RequestBody SysRoleStatusDTO dto) {
+    public Result<Void> changeStatus(@RequestBody SysRoleStatusDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
         roleService.changeRoleStatus(dto);
 
-        return new Result<>().ok(null, "变更成功");
+        return Result.ok(null, "变更成功");
     }
 }

@@ -39,7 +39,7 @@ public class SysUserController {
 
         Page<SysUserPageVO> userPage = userService.pageUsers(dto);
 
-        return new Result<Page<SysUserPageVO>>().ok(userPage);
+        return Result.ok(userPage);
     }
 
     @GetMapping("/{id}")
@@ -48,7 +48,7 @@ public class SysUserController {
     public Result<SysUserInfoVO> info(@PathVariable Long id) {
         SysUserInfoVO userInfo = userService.getUserInfo(id);
 
-        return new Result<SysUserInfoVO>().ok(userInfo);
+        return Result.ok(userInfo);
     }
 
     @PostMapping("/add")
@@ -59,39 +59,39 @@ public class SysUserController {
 
         SysUserInitVO vo = userService.addUser(dto);
 
-        return new Result<SysUserInitVO>().ok(vo, "添加成功");
+        return Result.ok(vo, "添加成功");
     }
 
     @PutMapping("/update")
     @Operation(summary = "修改用户")
     @RequiresPermissions("sys:user:update")
-    public Result<?> update(@RequestBody SysUserDTO dto) {
+    public Result<Void> update(@RequestBody SysUserDTO dto) {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class);
 
         userService.updateUser(dto);
 
-        return new Result<>().ok(null, "修改成功");
+        return Result.ok(null, "修改成功");
     }
 
     @PostMapping("/batch/delete")
     @Operation(summary = "批量删除用户")
     @RequiresPermissions("sys:user:delete")
-    public Result<?> batchDelete(@RequestBody SysUserBatchDeleteDTO dto) {
+    public Result<Void> batchDelete(@RequestBody SysUserBatchDeleteDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
         userService.batchDeleteUsers(dto.getIds());
 
-        return new Result<Void>().ok(null, "删除成功");
+        return Result.ok(null, "删除成功");
     }
 
     @PostMapping("/change/status")
     @Operation(summary = "变更用户状态")
     @RequiresPermissions("sys:user:status")
-    public Result<?> changeStatus(@RequestBody SysUserStatusDTO dto) {
+    public Result<Void> changeStatus(@RequestBody SysUserStatusDTO dto) {
         ValidatorUtils.validateEntity(dto);
 
         userService.changeUserStatus(dto);
 
-        return new Result<>().ok(null, "变更成功");
+        return Result.ok(null, "变更成功");
     }
 }

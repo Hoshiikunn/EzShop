@@ -12,7 +12,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
@@ -137,7 +136,7 @@ public class JwtFilter extends AuthenticatingFilter {
             httpResponse.setContentType("application/json;charset=UTF-8");
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             httpResponse.getWriter().write(OBJECT_MAPPER.writeValueAsString(
-                    new Result<>().error(UNAUTHORIZED)));
+                    Result.error(UNAUTHORIZED)));
         } catch (IOException e) {
             throw new RuntimeException("401 响应写入失败", e);
         }
