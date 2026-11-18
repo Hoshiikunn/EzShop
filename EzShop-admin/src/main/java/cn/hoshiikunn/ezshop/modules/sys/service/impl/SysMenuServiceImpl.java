@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
@@ -38,6 +36,11 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
     private final MenuValidatorRegistry validatorRegistry;
     private final SysRoleMenuService roleMenuService;
     private final RedisUtils redisUtils;
+
+    /**
+     * 菜单缓存键
+     */
+    private static final String MENU_CACHE_KEY = "sys:menu:all";
 
     @Override
     public List<SysMenuTreeVO> getMenuTree() {
@@ -100,6 +103,9 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         SysMenuEntity entity = BeanUtil.toBean(dto, SysMenuEntity.class);
         entity.setId(null);
         this.save(entity);
+
+        // 删除全量菜单缓存
+        redisUtils.delete(MENU_CACHE_KEY);
     }
 
     @Override
@@ -146,6 +152,9 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         // 写库
         SysMenuEntity updateEntity = BeanUtil.toBean(dto, SysMenuEntity.class);
         this.updateById(updateEntity);
+
+        // 删除全量菜单缓存
+        redisUtils.delete(MENU_CACHE_KEY);
     }
 
     @Override
@@ -168,8 +177,44 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         // 删除菜单
         this.removeById(id);
 
-        // 同步删除角色绑定
+        // 同步删除角色绑定以及删除全量菜单缓存
         roleMenuService.deleteByMenuId(id);
+        redisUtils.delete(MENU_CACHE_KEY);
+    }
+
+    @Override
+    public List<SysMenuTreeVO> getNavMenus(Long userId, boolean superAdmin) {
+        // 查全量菜单
+        List<SysMenuEntity> allMenus = listAllMenus();
+
+        // 超管返回全量导航
+        if (superAdmin) {
+            return TreeUtils.buildTree(
+                    BeanUtil.copyToList(allMenus, SysMenuTreeVO.class),
+                    Comparator.comparing(SysMenuTreeVO::getSort)
+                            .thenComparing(SysMenuTreeVO::getId)
+            );
+        }
+
+        // 查询当前用户启用角色绑定的菜单ID
+        Set<Long> roleMenuIds = roleMenuService.getMenuIdsByUserId(userId);
+        if (roleMenuIds.isEmpty()) {
+            // 无绑定菜单直接返回空导航
+            return Collections.emptyList();
+        }
+
+        // 按授权菜单过滤并转换VO
+        List<SysMenuTreeVO> nodes = allMenus.stream()
+                .filter(menu -> roleMenuIds.contains(menu.getId()))
+                .map(menu -> BeanUtil.toBean(menu, SysMenuTreeVO.class))
+                .collect(Collectors.toList());
+
+        // 组装导航菜单树
+        return TreeUtils.buildTree(
+                nodes,
+                Comparator.comparing(SysMenuTreeVO::getSort)
+                        .thenComparing(SysMenuTreeVO::getId)
+        );
     }
 
     /**
@@ -233,7 +278,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
      */
     private List<SysMenuEntity> listAllMenus() {
         // 查缓存 命中则返回
-        List<SysMenuEntity> cachedMenus = redisUtils.getList("sys:menu:all", SysMenuEntity.class);
+        List<SysMenuEntity> cachedMenus = redisUtils.getList(MENU_CACHE_KEY, SysMenuEntity.class);
         if (cachedMenus != null) {
             return cachedMenus;
         }
@@ -245,7 +290,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
                 .list();
 
         // 写入缓存并返回
-        redisUtils.set("sys:menu:all", menus, Duration.ofHours(1));
+        redisUtils.set(MENU_CACHE_KEY, menus, Duration.ofHours(1));
         return menus;
     }
 }

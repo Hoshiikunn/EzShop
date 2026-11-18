@@ -56,4 +56,13 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
      * @param id 菜单ID
      */
     void deleteMenu(Long id);
+
+    /**
+     * 获取导航菜单
+     *
+     * @param userId     用户ID
+     * @param superAdmin 是否超级管理员
+     * @return 导航菜单树
+     */
+    List<SysMenuTreeVO> getNavMenus(Long userId, boolean superAdmin);
 }
