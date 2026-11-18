@@ -34,7 +34,7 @@ public class SysMenuController {
     public Result<List<SysMenuTreeVO>> tree() {
         List<SysMenuTreeVO> tree = menuService.getMenuTree();
 
-        return new Result<List<SysMenuTreeVO>>().ok(tree);
+        return Result.ok(tree);
     }
 
     @GetMapping("/{id}")
@@ -43,7 +43,7 @@ public class SysMenuController {
     public Result<SysMenuInfoVO> info(@PathVariable Long id) {
         SysMenuInfoVO vo = menuService.getMenuInfo(id);
 
-        return new Result<SysMenuInfoVO>().ok(vo);
+        return Result.ok(vo);
     }
 
     @GetMapping("/list")
@@ -52,37 +52,37 @@ public class SysMenuController {
     public Result<List<SysMenuListVO>> list() {
         List<SysMenuListVO> menus = menuService.getMenuList();
 
-        return new Result<List<SysMenuListVO>>().ok(menus);
+        return Result.ok(menus);
     }
 
     @PostMapping("/add")
     @Operation(summary = "添加菜单")
     @RequiresPermissions("sys:menu:add")
-    public Result<?> add(@RequestBody SysMenuDTO dto) {
+    public Result<Void> add(@RequestBody SysMenuDTO dto) {
         ValidatorUtils.validateEntity(dto, AddGroup.class);
 
         menuService.addMenu(dto);
 
-        return new Result<>().ok(null, "添加成功");
+        return Result.ok(null, "添加成功");
     }
 
     @PutMapping("/update")
     @Operation(summary = "修改菜单")
     @RequiresPermissions("sys:menu:update")
-    public Result<?> update(@RequestBody SysMenuDTO dto) {
+    public Result<Void> update(@RequestBody SysMenuDTO dto) {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class);
 
         menuService.updateMenu(dto);
 
-        return new Result<>().ok(null, "修改成功");
+        return Result.ok(null, "修改成功");
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除菜单")
     @RequiresPermissions("sys:menu:delete")
-    public Result<?> delete(@PathVariable Long id) {
+    public Result<Void> delete(@PathVariable Long id) {
         menuService.deleteMenu(id);
 
-        return new Result<>().ok(null, "删除成功");
+        return Result.ok(null, "删除成功");
     }
 }

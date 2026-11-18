@@ -12,6 +12,7 @@ import lombok.Getter;
  *     <li>101 - 认证模块 </li>
  *     <li>102 - 用户模块 </li>
  *     <li>103 - 角色模块 </li>
+ *     <li>104 - 菜单模块 </li>
  * </ul>
  */
 @Getter

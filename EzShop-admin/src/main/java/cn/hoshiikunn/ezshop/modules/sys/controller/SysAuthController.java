@@ -33,14 +33,14 @@ public class SysAuthController {
 
         LoginTokenVO loginToken = authService.login(request, dto);
 
-        return new Result<LoginTokenVO>().ok(loginToken, "登录成功");
+        return Result.ok(loginToken, "登录成功");
     }
 
     @PostMapping("/logout")
     @Operation(summary = "登出")
-    public Result<?> logout() {
+    public Result<Void> logout() {
         authService.logout();
 
-        return new Result<>().ok(null, "已退出登录");
+        return Result.ok(null, "已退出登录");
     }
 }
