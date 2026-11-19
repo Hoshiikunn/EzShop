@@ -20,8 +20,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,20 +49,18 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
 
     @Override
     public SysUserEntity getUserEntityByUsername(String username) {
-        LambdaQueryWrapper<SysUserEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysUserEntity::getUsername, username);
-
-        return this.getOne(wrapper);
+        return this.lambdaQuery()
+                .eq(SysUserEntity::getUsername, username)
+                .one();
     }
 
     @Override
     public void updateLastLoginInfo(String ip, Long userId) {
-        LambdaUpdateWrapper<SysUserEntity> wrapper = new LambdaUpdateWrapper<SysUserEntity>()
+        this.lambdaUpdate()
                 .eq(SysUserEntity::getId, userId)
                 .set(SysUserEntity::getLastLoginIp, ip)
-                .set(SysUserEntity::getLastLoginTime, new Date());
-
-        this.update(wrapper);
+                .set(SysUserEntity::getLastLoginTime, new Date())
+                .update();
     }
 
     @Override
@@ -77,8 +73,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         // 构建分页实体
         Page<SysUserEntity> page = new Page<>(dto.getCurrent(), dto.getSize());
 
-        LambdaQueryWrapper<SysUserEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(dto.getId() != null, SysUserEntity::getId, dto.getId())
+        Page<SysUserEntity> result = this.page(page, this.lambdaQuery()
+                .eq(dto.getId() != null, SysUserEntity::getId, dto.getId())
                 .like(StrUtil.isNotBlank(dto.getUsername()), SysUserEntity::getUsername, dto.getUsername())
                 .like(StrUtil.isNotBlank(dto.getRealName()), SysUserEntity::getRealName, dto.getRealName())
                 .eq(StrUtil.isNotBlank(dto.getMobile()), SysUserEntity::getMobile, dto.getMobile())
@@ -87,10 +83,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
                 .ne(!viewerIsSuper, SysUserEntity::getIsSuperAdmin, IS_SUPER_ADMIN.getValue())
                 .ge(dto.getCreateTimeBegin() != null, SysUserEntity::getCreateTime, dto.getCreateTimeBegin())
                 .le(dto.getCreateTimeEnd() != null, SysUserEntity::getCreateTime, dto.getCreateTimeEnd())
-                .orderByDesc(SysUserEntity::getCreateTime);
-        Page<SysUserEntity> result = this.page(page, wrapper);
-
-        return (Page<SysUserPageVO>) result.convert(SysUserPageVO::of);
+                .orderByDesc(SysUserEntity::getCreateTime)
+                .getWrapper());
+        return (Page<SysUserPageVO>) result.convert(user -> BeanUtil.toBean(user, SysUserPageVO.class));
     }
 
     @Override
@@ -111,7 +106,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         SysUserInfoVO info = BeanUtil.toBean(userEntity, SysUserInfoVO.class);
         // 填充已绑定角色
         List<SysRoleEntity> roles = userRoleService.getRolesByUserId(id);
-        info.setRoles(roles.stream().map(SysRoleBriefVO::of).collect(Collectors.toList()));
+        info.setRoles(roles.stream()
+                .map(role -> BeanUtil.toBean(role, SysRoleBriefVO.class))
+                .collect(Collectors.toList()));
 
         return info;
     }
@@ -122,7 +119,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         // 检查唯一性
         checkUnique(dto);
         // DTO转实体
-        SysUserEntity userEntity = BeanUtil.copyProperties(dto, SysUserEntity.class);
+        SysUserEntity userEntity = BeanUtil.toBean(dto, SysUserEntity.class);
         // 处理空串 统一为null
         userEntity.setMobile(StrUtil.blankToDefault(userEntity.getMobile(), null));
         userEntity.setEmail(StrUtil.blankToDefault(userEntity.getEmail(), null));
@@ -155,16 +152,15 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         // 检查唯一性
         checkUnique(dto);
         // 组装修改内容
-        LambdaUpdateWrapper<SysUserEntity> wrapper = new LambdaUpdateWrapper<SysUserEntity>()
+        boolean updated = this.lambdaUpdate()
                 .eq(SysUserEntity::getId, userEntity.getId())
                 .set(SysUserEntity::getUsername, dto.getUsername())
                 .set(SysUserEntity::getRealName, dto.getRealName())
                 .set(SysUserEntity::getGender, dto.getGender())
                 .set(SysUserEntity::getMobile, StrUtil.blankToDefault(dto.getMobile(), null))
                 .set(SysUserEntity::getEmail, StrUtil.blankToDefault(dto.getEmail(), null))
-                .set(SysUserEntity::getAvatarUrl, StrUtil.blankToDefault(dto.getAvatarUrl(), null));
-        // 写库
-        boolean updated = this.update(new SysUserEntity(), wrapper);
+                .set(SysUserEntity::getAvatarUrl, StrUtil.blankToDefault(dto.getAvatarUrl(), null))
+                .update();
         if (!updated) {
             throw new BusinessException(USER_NOT_FOUND, "被修改的用户不存在");
         }
@@ -196,14 +192,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         // 墓碑重命名 + 逻辑删 + 记录删除时间：逐行处理
         Date now = new Date();
         for (SysUserEntity user : userEntityList) {
-            LambdaUpdateWrapper<SysUserEntity> wrapper = new LambdaUpdateWrapper<SysUserEntity>()
+            this.lambdaUpdate()
                     .eq(SysUserEntity::getId, user.getId())
                     .set(SysUserEntity::getUsername, buildTombstone(user.getUsername(), user.getId()))
                     .set(SysUserEntity::getMobile, buildTombstone(user.getMobile(), user.getId()))
                     .set(SysUserEntity::getEmail, buildTombstone(user.getEmail(), user.getId()))
                     .set(SysUserEntity::getIsDeleted, DELETED.getValue())
-                    .set(SysUserEntity::getDeleteTime, now);
-            this.update(new SysUserEntity(), wrapper);
+                    .set(SysUserEntity::getDeleteTime, now)
+                    .update();
         }
 
         // 解除用户角色绑定关系
@@ -237,10 +233,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new BusinessException(USER_SELF_DISABLE_FORBIDDEN);
         }
 
-        LambdaUpdateWrapper<SysUserEntity> wrapper = new LambdaUpdateWrapper<SysUserEntity>()
+        this.lambdaUpdate()
                 .eq(SysUserEntity::getId, dto.getId())
-                .set(SysUserEntity::getStatus, dto.getStatus());
-        this.update(new SysUserEntity(), wrapper);
+                .set(SysUserEntity::getStatus, dto.getStatus())
+                .update();
 
         // 只有禁用才踢令牌
         if (disabling) {
@@ -269,27 +265,30 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     private void checkUnique(SysUserDTO dto) {
         boolean isUpdate = dto.getId() != null;
 
-        long usernameCount = this.count(new LambdaQueryWrapper<SysUserEntity>()
+        long usernameCount = this.lambdaQuery()
                 .eq(SysUserEntity::getUsername, dto.getUsername())
-                .ne(isUpdate, SysUserEntity::getId, dto.getId()));
+                .ne(isUpdate, SysUserEntity::getId, dto.getId())
+                .count();
         if (usernameCount > 0) {
             throw new BusinessException(USER_USERNAME_EXISTS);
         }
 
         // mobile、email 是可选字段，传了才查重
         if (StrUtil.isNotBlank(dto.getMobile())) {
-            long mobileCount = this.count(new LambdaQueryWrapper<SysUserEntity>()
+            long mobileCount = this.lambdaQuery()
                     .eq(SysUserEntity::getMobile, dto.getMobile())
-                    .ne(isUpdate, SysUserEntity::getId, dto.getId()));
+                    .ne(isUpdate, SysUserEntity::getId, dto.getId())
+                    .count();
             if (mobileCount > 0) {
                 throw new BusinessException(USER_MOBILE_EXISTS);
             }
         }
 
         if (StrUtil.isNotBlank(dto.getEmail())) {
-            long emailCount = this.count(new LambdaQueryWrapper<SysUserEntity>()
+            long emailCount = this.lambdaQuery()
                     .eq(SysUserEntity::getEmail, dto.getEmail())
-                    .ne(isUpdate, SysUserEntity::getId, dto.getId()));
+                    .ne(isUpdate, SysUserEntity::getId, dto.getId())
+                    .count();
             if (emailCount > 0) {
                 throw new BusinessException(USER_EMAIL_EXISTS);
             }

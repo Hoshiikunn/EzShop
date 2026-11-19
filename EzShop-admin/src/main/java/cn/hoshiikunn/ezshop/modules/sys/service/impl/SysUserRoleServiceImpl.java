@@ -6,9 +6,7 @@ import cn.hoshiikunn.ezshop.modules.sys.dao.SysRoleDao;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysUserRoleDao;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserRoleEntity;
-import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,8 +47,9 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleDao, SysU
             return;
         }
 
-        this.remove(new LambdaQueryWrapper<SysUserRoleEntity>()
-                .eq(SysUserRoleEntity::getRoleId, roleId));
+        this.lambdaUpdate()
+                .eq(SysUserRoleEntity::getRoleId, roleId)
+                .remove();
     }
 
     @Override
@@ -68,9 +67,9 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleDao, SysU
         }
 
         // 检查角色是否可绑定
-        List<SysRoleEntity> roles = roleDao.selectList(new LambdaQueryWrapper<SysRoleEntity>()
-                .in(SysRoleEntity::getId, roleIds)
-                .eq(SysRoleEntity::getStatus, ENABLE.getValue()));
+        List<SysRoleEntity> roles = roleDao.selectByIds(roleIds).stream()
+                .filter(role -> ENABLE.getValue().equals(role.getStatus()))
+                .collect(Collectors.toList());
         if (roles.size() != roleIds.size()) {
             throw new BusinessException(ROLE_NOT_FOUND, "角色不存在或不可绑定");
         }
@@ -96,8 +95,9 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleDao, SysU
             return;
         }
 
-        this.remove(new LambdaQueryWrapper<SysUserRoleEntity>()
-                .eq(SysUserRoleEntity::getUserId, id));
+        this.lambdaUpdate()
+                .eq(SysUserRoleEntity::getUserId, id)
+                .remove();
     }
 
     @Override
@@ -114,7 +114,8 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleDao, SysU
             return;
         }
 
-        this.remove(new LambdaQueryWrapper<SysUserRoleEntity>()
-                .in(SysUserRoleEntity::getUserId, userIds));
+        this.lambdaUpdate()
+                .in(SysUserRoleEntity::getUserId, userIds)
+                .remove();
     }
 }
