@@ -9,7 +9,6 @@ import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleMenuEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +44,7 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
         }
 
         // 检查菜单是否可绑定
-        List<SysMenuEntity> menus = menuDao.selectList(new LambdaQueryWrapper<SysMenuEntity>()
-                .in(SysMenuEntity::getId, menuIds));
+        List<SysMenuEntity> menus = menuDao.selectByIds(menuIds);
         if (menus.size() != menuIds.size()) {
             throw new BusinessException(MENU_NOT_FOUND, "菜单不存在或不可绑定");
         }
@@ -67,9 +65,9 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
 
     @Override
     public void deleteByRoleId(Long roleId) {
-        LambdaQueryWrapper<SysRoleMenuEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysRoleMenuEntity::getRoleId, roleId);
-        this.remove(wrapper);
+        this.lambdaUpdate()
+                .eq(SysRoleMenuEntity::getRoleId, roleId)
+                .remove();
     }
 
     @Override
@@ -89,8 +87,9 @@ public class SysRoleMenuServiceImpl extends BaseServiceImpl<SysRoleMenuDao, SysR
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByMenuId(Long menuId) {
-        this.remove(new LambdaQueryWrapper<SysRoleMenuEntity>()
-                .eq(SysRoleMenuEntity::getMenuId, menuId));
+        this.lambdaUpdate()
+                .eq(SysRoleMenuEntity::getMenuId, menuId)
+                .remove();
     }
 
     @Override
