@@ -1,7 +1,5 @@
 package cn.hoshiikunn.ezshop.modules.sys.vo;
 
-import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
-import cn.hutool.core.bean.BeanUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -40,10 +38,4 @@ public class SysRoleListVO implements Serializable {
     @Schema(description = "更新时间")
     private Date updateTime;
 
-    /**
-     * 实体转列表 VO
-     */
-    public static SysRoleListVO of(SysRoleEntity entity) {
-        return BeanUtil.toBean(entity, SysRoleListVO.class);
-    }
 }

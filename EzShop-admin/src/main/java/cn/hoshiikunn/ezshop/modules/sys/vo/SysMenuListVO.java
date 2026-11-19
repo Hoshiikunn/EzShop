@@ -1,7 +1,5 @@
 package cn.hoshiikunn.ezshop.modules.sys.vo;
 
-import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
-import cn.hutool.core.bean.BeanUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -45,10 +43,4 @@ public class SysMenuListVO implements Serializable {
     @Schema(description = "可见性 0-隐藏 1-显示")
     private Integer visible;
 
-    /**
-     * 实体 转 VO
-     */
-    public static SysMenuListVO of(SysMenuEntity entity) {
-        return BeanUtil.toBean(entity, SysMenuListVO.class);
-    }
 }

@@ -1,7 +1,5 @@
 package cn.hoshiikunn.ezshop.modules.sys.vo;
 
-import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
-import cn.hutool.core.bean.BeanUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -18,10 +16,4 @@ public class SysRoleBriefVO implements Serializable {
     @Schema(description = "角色名称")
     private String roleName;
 
-    /**
-     * 实体 转 VO
-     */
-    public static SysRoleBriefVO of(SysRoleEntity entity) {
-        return BeanUtil.toBean(entity, SysRoleBriefVO.class);
-    }
 }

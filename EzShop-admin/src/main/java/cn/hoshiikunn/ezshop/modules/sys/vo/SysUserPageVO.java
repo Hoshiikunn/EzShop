@@ -1,7 +1,5 @@
 package cn.hoshiikunn.ezshop.modules.sys.vo;
 
-import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
-import cn.hutool.core.bean.BeanUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -40,10 +38,4 @@ public class SysUserPageVO implements Serializable {
     @Schema(description = "创建时间")
     private Date createTime;
 
-    /**
-     * 实体转 VO
-     */
-    public static SysUserPageVO of(SysUserEntity entity) {
-        return BeanUtil.toBean(entity, SysUserPageVO.class);
-    }
 }
