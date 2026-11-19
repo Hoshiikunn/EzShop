@@ -15,8 +15,6 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -45,20 +43,18 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
         // 构建分页实体
         Page<SysRoleEntity> page = new Page<>(dto.getCurrent(), dto.getSize());
 
-        // 组装查询条件
-        LambdaQueryWrapper<SysRoleEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(StrUtil.isNotBlank(dto.getRoleName()), SysRoleEntity::getRoleName, dto.getRoleName())
+        // 分页查询并转换 VO
+        Page<SysRoleEntity> result = this.page(page, this.lambdaQuery()
+                .like(StrUtil.isNotBlank(dto.getRoleName()), SysRoleEntity::getRoleName, dto.getRoleName())
                 .like(StrUtil.isNotBlank(dto.getRoleKey()), SysRoleEntity::getRoleKey, dto.getRoleKey())
                 .eq(dto.getStatus() != null, SysRoleEntity::getStatus, dto.getStatus())
                 .ge(dto.getCreateTimeBegin() != null, SysRoleEntity::getCreateTime, dto.getCreateTimeBegin())
                 .le(dto.getCreateTimeEnd() != null, SysRoleEntity::getCreateTime, dto.getCreateTimeEnd())
                 .orderByAsc(SysRoleEntity::getSort)
                 .orderByDesc(SysRoleEntity::getCreateTime)
-                .orderByDesc(SysRoleEntity::getId);
-
-        // 分页查询并转换 VO
-        Page<SysRoleEntity> result = this.page(page, wrapper);
-        return (Page<SysRolePageVO>) result.convert(SysRolePageVO::of);
+                .orderByDesc(SysRoleEntity::getId)
+                .getWrapper());
+        return (Page<SysRolePageVO>) result.convert(role -> BeanUtil.toBean(role, SysRolePageVO.class));
     }
 
     @Override
@@ -79,14 +75,14 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
     @Transactional(rollbackFor = Exception.class)
     public void addRole(SysRoleDTO dto) {
         // 检查权限字符唯一性
-        LambdaQueryWrapper<SysRoleEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysRoleEntity::getRoleKey, dto.getRoleKey());
-        if (this.count(wrapper) > 0) {
+        if (this.lambdaQuery()
+                .eq(SysRoleEntity::getRoleKey, dto.getRoleKey())
+                .exists()) {
             throw new BusinessException(ROLE_KEY_EXISTS);
         }
 
         // 补充字段并写库
-        SysRoleEntity addEntity = BeanUtil.copyProperties(dto, SysRoleEntity.class);
+        SysRoleEntity addEntity = BeanUtil.toBean(dto, SysRoleEntity.class);
         addEntity.setId(null);
         addEntity.setStatus(ENABLE.getValue());
         try {
@@ -114,13 +110,12 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
         }
 
         // 更新角色基础信息
-        LambdaUpdateWrapper<SysRoleEntity> updateWrapper = new LambdaUpdateWrapper<SysRoleEntity>()
+        boolean updated = this.lambdaUpdate()
                 .eq(SysRoleEntity::getId, roleEntity.getId())
                 .set(SysRoleEntity::getRoleName, dto.getRoleName())
                 .set(SysRoleEntity::getSort, dto.getSort())
-                .set(SysRoleEntity::getRemark, StrUtil.blankToDefault(dto.getRemark(), null));
-
-        boolean updated = this.update(new SysRoleEntity(), updateWrapper);
+                .set(SysRoleEntity::getRemark, StrUtil.blankToDefault(dto.getRemark(), null))
+                .update();
         if (!updated) {
             throw new BusinessException(ROLE_NOT_FOUND, "被修改的角色不存在");
         }
@@ -172,11 +167,10 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
         }
 
         // 更新角色状态
-        LambdaUpdateWrapper<SysRoleEntity> updateWrapper = new LambdaUpdateWrapper<SysRoleEntity>()
+        boolean updated = this.lambdaUpdate()
                 .eq(SysRoleEntity::getId, roleEntity.getId())
-                .set(SysRoleEntity::getStatus, dto.getStatus());
-
-        boolean updated = this.update(new SysRoleEntity(), updateWrapper);
+                .set(SysRoleEntity::getStatus, dto.getStatus())
+                .update();
         if (!updated) {
             throw new BusinessException(ROLE_NOT_FOUND, "被变更的角色不存在");
         }
@@ -192,7 +186,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
 
         // 实体转换 VO
         return roles.stream()
-                .map(SysRoleListVO::of)
+                .map(role -> BeanUtil.toBean(role, SysRoleListVO.class))
                 .collect(Collectors.toList());
     }
 }
