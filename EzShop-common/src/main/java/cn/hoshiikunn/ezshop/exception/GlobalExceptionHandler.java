@@ -4,9 +4,16 @@ import cn.hoshiikunn.ezshop.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.Comparator;
 
 import static cn.hoshiikunn.ezshop.result.ResultCode.*;
 
@@ -37,6 +44,49 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public Result<Void> handleUnauthorizedException(UnauthorizedException ue) {
         return Result.error(FORBIDDEN);
+    }
+
+    /**
+     * 处理参数绑定校验异常
+     *
+     * @param e 参数绑定校验异常
+     * @return {@code Result} 统一响应
+     */
+    @ExceptionHandler(BindException.class)
+    public Result<Void> handleBindException(BindException e) {
+        return Result.error(BAD_REQUEST.getCode(), resolveFirstMessage(e));
+    }
+
+    /**
+     * 获取排序后的第一条校验错误提示
+     * <p>
+     * Bean Validation 的违规项集合不保证顺序，这里显式排序以保证提示稳定
+     *
+     * @param e 参数绑定校验异常
+     * @return 第一条错误提示
+     */
+    private String resolveFirstMessage(BindException e) {
+        return e.getFieldErrors().stream()
+                .min(Comparator.comparing(FieldError::getField)
+                        .thenComparing(this::resolveErrorMessage))
+                .map(this::resolveErrorMessage)
+                .orElseGet(() -> e.getAllErrors().stream()
+                        .min(Comparator.comparing(ObjectError::getObjectName)
+                                .thenComparing(this::resolveErrorMessage))
+                        .map(this::resolveErrorMessage)
+                        .orElse(BAD_REQUEST.getMsg()));
+    }
+
+    /**
+     * 解析错误提示
+     * <p>
+     * Bean Validation 未显式声明消息时，DefaultMessage 可能为 null
+     *
+     * @param error 校验错误
+     * @return 错误提示
+     */
+    private String resolveErrorMessage(ObjectError error) {
+        return error.getDefaultMessage() == null ? BAD_REQUEST.getMsg() : error.getDefaultMessage();
     }
 
     /**
