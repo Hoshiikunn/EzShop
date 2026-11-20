@@ -9,15 +9,16 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import cn.hoshiikunn.ezshop.result.Result;
-import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
 import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
+import javax.validation.Valid;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -34,9 +35,7 @@ public class SysUserController {
     @GetMapping("/page")
     @Operation(summary = "分页条件查询")
     @RequiresPermissions("sys:user:query")
-    public Result<Page<SysUserPageVO>> page(@ParameterObject SysUserPageDTO dto) {
-        ValidatorUtils.validateEntity(dto);
-
+    public Result<Page<SysUserPageVO>> page(@Validated @ParameterObject SysUserPageDTO dto) {
         Page<SysUserPageVO> userPage = userService.pageUsers(dto);
 
         return Result.ok(userPage);
@@ -54,9 +53,7 @@ public class SysUserController {
     @PostMapping("/add")
     @Operation(summary = "添加用户")
     @RequiresPermissions("sys:user:add")
-    public Result<SysUserInitVO> add(@RequestBody SysUserDTO dto) {
-        ValidatorUtils.validateEntity(dto, AddGroup.class);
-
+    public Result<SysUserInitVO> add(@Validated(AddGroup.class) @RequestBody SysUserDTO dto) {
         SysUserInitVO vo = userService.addUser(dto);
 
         return Result.ok(vo, "添加成功");
@@ -65,9 +62,7 @@ public class SysUserController {
     @PutMapping("/update")
     @Operation(summary = "修改用户")
     @RequiresPermissions("sys:user:update")
-    public Result<Void> update(@RequestBody SysUserDTO dto) {
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
-
+    public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysUserDTO dto) {
         userService.updateUser(dto);
 
         return Result.ok(null, "修改成功");
@@ -76,9 +71,7 @@ public class SysUserController {
     @PostMapping("/batch/delete")
     @Operation(summary = "批量删除用户")
     @RequiresPermissions("sys:user:delete")
-    public Result<Void> batchDelete(@RequestBody SysUserBatchDeleteDTO dto) {
-        ValidatorUtils.validateEntity(dto);
-
+    public Result<Void> batchDelete(@Valid @RequestBody SysUserBatchDeleteDTO dto) {
         userService.batchDeleteUsers(dto.getIds());
 
         return Result.ok(null, "删除成功");
@@ -87,9 +80,7 @@ public class SysUserController {
     @PostMapping("/change/status")
     @Operation(summary = "变更用户状态")
     @RequiresPermissions("sys:user:status")
-    public Result<Void> changeStatus(@RequestBody SysUserStatusDTO dto) {
-        ValidatorUtils.validateEntity(dto);
-
+    public Result<Void> changeStatus(@Valid @RequestBody SysUserStatusDTO dto) {
         userService.changeUserStatus(dto);
 
         return Result.ok(null, "变更成功");
