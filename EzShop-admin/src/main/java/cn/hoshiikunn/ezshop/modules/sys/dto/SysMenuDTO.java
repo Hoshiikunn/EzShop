@@ -62,8 +62,7 @@ public class SysMenuDTO implements Serializable {
     @Range(min = 0, max = 9999, message = "排序取值范围为 0-9999")
     private Integer sort;
 
-    @Schema(description = "可见性 0-隐藏 1-显示", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "可见性为必填项")
+    @Schema(description = "可见性 0-隐藏 1-显示")
     @Range(min = 0, max = 1, message = "可见性取值只能为 0(隐藏) 1(显示)")
     private Integer visible;
 

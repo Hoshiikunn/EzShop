@@ -6,8 +6,7 @@ import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Component;
 
-import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_PERMS_REQUIRED;
-import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_TYPE_MISMATCH;
+import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.PERMISSION;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.MENU;
 
@@ -24,9 +23,25 @@ public class PermissionValidator implements MenuValidator {
 
     @Override
     public void validateFields(SysMenuDTO dto) {
-        // 权限节点必须设置权限标识
+        // 必须设置权限标识
         if (StrUtil.isBlank(dto.getPerms())) {
-            throw new BusinessException(MENU_PERMS_REQUIRED);
+            throw new BusinessException(MENU_PERMS_REQUIRED, "权限节点必须设置权限标识");
+        }
+        // 权限节点不可设置路由地址
+        if (StrUtil.isNotBlank(dto.getPath())) {
+            throw new BusinessException(MENU_PATH_NOT_ALLOWED, "权限节点不可设置路由地址");
+        }
+        // 权限节点不可设置组件路径
+        if (StrUtil.isNotBlank(dto.getComponent())) {
+            throw new BusinessException(MENU_COMPONENT_NOT_ALLOWED, "权限节点不可设置组件路径");
+        }
+        // 权限节点不可设置可见性
+        if (dto.getVisible() != null) {
+            throw new BusinessException(MENU_VISIBLE_NOT_ALLOWED, "权限节点不可设置可见性");
+        }
+        // 权限节点不可设置打开方式
+        if (dto.getOpenStyle() != null) {
+            throw new BusinessException(MENU_OPEN_STYLE_NOT_ALLOWED, "权限节点不可设置打开方式");
         }
     }
 
