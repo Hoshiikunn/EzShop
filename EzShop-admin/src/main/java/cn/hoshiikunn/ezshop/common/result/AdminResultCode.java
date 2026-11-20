@@ -46,12 +46,17 @@ public enum AdminResultCode implements IResultCode {
     MENU_ID_REQUIRED(104002, "菜单ID不能为空"),
     MENU_NAME_EXISTS(104003, "同级菜单名称已存在"),
     MENU_TYPE_MISMATCH(104004, "菜单类型与挂载位置不匹配"),
-    MENU_PERMS_REQUIRED(104005, "权限节点必须设置权限标识"),
-    MENU_PERMS_NOT_ALLOWED(104006, "该类型菜单不可设置权限标识"),
+    MENU_PERMS_REQUIRED(104005, "菜单权限标识为必填项"),
+    MENU_PERMS_NOT_ALLOWED(104006, "菜单不可设置权限标识"),
     MENU_TYPE_NOT_MODIFIABLE(104007, "菜单类型不可修改"),
     MENU_PARENT_CYCLE(104008, "上级菜单不能选择自身或自身的下级菜单"),
     MENU_HAS_CHILDREN(104009, "存在子菜单，不可删除"),
-
+    MENU_VISIBLE_REQUIRED(104010, "菜单可见性为必填项"),
+    MENU_OPEN_STYLE_REQUIRED(104011, "菜单打开方式为必填项"),
+    MENU_PATH_NOT_ALLOWED(104012, "菜单不可设置路由地址"),
+    MENU_COMPONENT_NOT_ALLOWED(104013, "菜单不可设置组件路径"),
+    MENU_VISIBLE_NOT_ALLOWED(104014, "菜单不可设置可见性"),
+    MENU_OPEN_STYLE_NOT_ALLOWED(104015, "菜单不可设置打开方式"),
     ;
 
     // 响应码
