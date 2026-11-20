@@ -7,9 +7,9 @@ import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.*;
 import cn.hoshiikunn.ezshop.result.Result;
-import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
 import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
+import javax.validation.Valid;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,9 +36,7 @@ public class SysRoleController {
     @GetMapping("/page")
     @Operation(summary = "分页条件查询")
     @RequiresPermissions("sys:role:query")
-    public Result<Page<SysRolePageVO>> page(@ParameterObject SysRolePageDTO dto) {
-        ValidatorUtils.validateEntity(dto);
-
+    public Result<Page<SysRolePageVO>> page(@Validated @ParameterObject SysRolePageDTO dto) {
         Page<SysRolePageVO> rolePage = roleService.pageRole(dto);
 
         return Result.ok(rolePage);
@@ -64,9 +63,7 @@ public class SysRoleController {
     @PostMapping("/add")
     @Operation(summary = "添加角色")
     @RequiresPermissions("sys:role:add")
-    public Result<Void> add(@RequestBody SysRoleDTO dto) {
-        ValidatorUtils.validateEntity(dto, AddGroup.class);
-
+    public Result<Void> add(@Validated(AddGroup.class) @RequestBody SysRoleDTO dto) {
         roleService.addRole(dto);
 
         return Result.ok(null, "添加成功");
@@ -75,9 +72,7 @@ public class SysRoleController {
     @PutMapping("/update")
     @Operation(summary = "修改角色")
     @RequiresPermissions("sys:role:update")
-    public Result<Void> update(@RequestBody SysRoleDTO dto) {
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
-
+    public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysRoleDTO dto) {
         roleService.updateRole(dto);
 
         return Result.ok(null, "修改成功");
@@ -98,9 +93,7 @@ public class SysRoleController {
     @PostMapping("/change/status")
     @Operation(summary = "变更角色状态")
     @RequiresPermissions("sys:role:status")
-    public Result<Void> changeStatus(@RequestBody SysRoleStatusDTO dto) {
-        ValidatorUtils.validateEntity(dto);
-
+    public Result<Void> changeStatus(@Valid @RequestBody SysRoleStatusDTO dto) {
         roleService.changeRoleStatus(dto);
 
         return Result.ok(null, "变更成功");

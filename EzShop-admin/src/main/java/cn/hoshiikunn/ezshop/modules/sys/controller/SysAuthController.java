@@ -5,7 +5,7 @@ import cn.hoshiikunn.ezshop.modules.sys.service.SysAuthService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.LoginTokenVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import cn.hoshiikunn.ezshop.result.Result;
-import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
+import javax.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +27,7 @@ public class SysAuthController {
 
     @PostMapping("/login")
     @Operation(summary = "登录")
-    public Result<LoginTokenVO> login(HttpServletRequest request, @RequestBody LoginDTO dto) {
-        ValidatorUtils.validateEntity(dto);
-
+    public Result<LoginTokenVO> login(@Valid @RequestBody LoginDTO dto, HttpServletRequest request) {
         LoginTokenVO loginToken = authService.login(request, dto);
 
         return Result.ok(loginToken, "登录成功");

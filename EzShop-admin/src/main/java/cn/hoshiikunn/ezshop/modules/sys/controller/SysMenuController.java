@@ -6,13 +6,14 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuListVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuTreeVO;
 import cn.hoshiikunn.ezshop.result.Result;
-import cn.hoshiikunn.ezshop.utils.ValidatorUtils;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
 import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
+import javax.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,9 +59,7 @@ public class SysMenuController {
     @PostMapping("/add")
     @Operation(summary = "添加菜单")
     @RequiresPermissions("sys:menu:add")
-    public Result<Void> add(@RequestBody SysMenuDTO dto) {
-        ValidatorUtils.validateEntity(dto, AddGroup.class);
-
+    public Result<Void> add(@Validated(AddGroup.class) @RequestBody SysMenuDTO dto) {
         menuService.addMenu(dto);
 
         return Result.ok(null, "添加成功");
@@ -69,9 +68,7 @@ public class SysMenuController {
     @PutMapping("/update")
     @Operation(summary = "修改菜单")
     @RequiresPermissions("sys:menu:update")
-    public Result<Void> update(@RequestBody SysMenuDTO dto) {
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
-
+    public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysMenuDTO dto) {
         menuService.updateMenu(dto);
 
         return Result.ok(null, "修改成功");
