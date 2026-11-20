@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/17 14:25:27                          */
+/* Created on:     2026/11/20 22:05:20                          */
 /*==============================================================*/
 
 
@@ -46,8 +46,8 @@ create table sys_menu
    perms                varchar(255) comment '权限标识',
    icon                 varchar(50) comment '菜单图标',
    sort                 int not null default 0 comment '排序',
-   visible              tinyint not null default 1 comment '可见性 0-隐藏 1-显示',
-   open_style           tinyint not null default 0 comment '打开方式 0-内部打开 1-外部打开',
+   visible              tinyint default 1 comment '可见性 0-隐藏 1-显示',
+   open_style           tinyint default 0 comment '打开方式 0-内部打开 1-外部打开',
    creator              bigint comment '创建者',
    create_time          datetime comment '创建时间',
    updater              bigint comment '更新者',
