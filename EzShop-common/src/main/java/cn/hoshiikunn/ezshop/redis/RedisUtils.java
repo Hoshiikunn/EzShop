@@ -2,6 +2,7 @@ package cn.hoshiikunn.ezshop.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -12,7 +13,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class RedisUtils {
+
     private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     /**
      * 设置缓存
@@ -77,5 +80,35 @@ public class RedisUtils {
      */
     public void delete(Collection<String> keys) {
         redisTemplate.delete(keys);
+    }
+
+    /**
+     * 设置字符串缓存
+     *
+     * @param key     缓存键
+     * @param value   字符串值
+     * @param timeout 过期时长 (不可为 null)
+     */
+    public void setString(String key, String value, Duration timeout) {
+        stringRedisTemplate.opsForValue().set(key, value, timeout);
+    }
+
+    /**
+     * 获取字符串缓存
+     *
+     * @param key 缓存键
+     * @return 字符串值 (键不存在时返回 null)
+     */
+    public String getString(String key) {
+        return stringRedisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 删除字符串缓存
+     *
+     * @param key 缓存键
+     */
+    public void deleteString(String key) {
+        stringRedisTemplate.delete(key);
     }
 }

@@ -3,6 +3,7 @@ package cn.hoshiikunn.ezshop.modules.security.token;
 import cn.hoshiikunn.ezshop.modules.sys.vo.LoginTokenVO;
 import cn.hoshiikunn.ezshop.redis.RedisUtils;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,22 +13,29 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 
+/**
+ * 令牌业务实现类
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
+
+    private final TokenProperties properties;
+    private final RedisUtils redisUtils;
 
     /**
      * 令牌键前缀
      */
     private static final String TOKEN_KEY_PREFIX = "auth:admin:token:";
     /**
-     * 用户键前缀
+     * JWT 用户ID声明键
      */
-    private static final String USER_KEY_PREFIX = "auth:admin:user:";
-
-    private final TokenProperties properties;
-    private final RedisUtils redisUtils;
+    private static final String CLAIM_UID = "uid";
+    /**
+     * JWT 令牌唯一ID声明键
+     */
+    private static final String CLAIM_JTI = "jti";
 
     @Override
     public LoginTokenVO issueToken(Long userId) {
@@ -37,20 +45,14 @@ public class TokenServiceImpl implements TokenService {
 
         // 生成令牌
         String token = JWT.create()
-                .setPayload("uid", userId)
+                .setPayload(CLAIM_UID, userId)
                 .setJWTId(jti)
                 .setKey(secretBytes())
                 .setExpiresAt(expiresAt)
                 .sign();
 
-        // 互踢
-        String oldJti = (String) redisUtils.get(USER_KEY_PREFIX + userId);
-        if (oldJti != null) {
-            redisUtils.delete(TOKEN_KEY_PREFIX + oldJti);
-        }
-
-        redisUtils.set(TOKEN_KEY_PREFIX + jti, String.valueOf(userId), ttl);
-        redisUtils.set(USER_KEY_PREFIX + userId, jti, ttl);
+        // 写入缓存
+        redisUtils.setString(TOKEN_KEY_PREFIX + userId, jti, properties.getExpire());
 
         // 返回令牌
         LoginTokenVO vo = new LoginTokenVO();
@@ -69,34 +71,34 @@ public class TokenServiceImpl implements TokenService {
                 return null;
             }
 
-            // 取 jti 查白名单，被互踢 / 已登出 / Redis 已过期的令牌在此失效
-            String jti = (String) jwt.getPayload("jti");
-            String userId = (String) redisUtils.get(TOKEN_KEY_PREFIX + jti);
-            if (userId == null) {
-                log.debug("令牌 Redis 白名单无记录 | jti = {}", jti);
+            // 读取 uid 与 jti 声明
+            Long userId = readUserId(jwt.getPayload(CLAIM_UID));
+            String jti = readJti(jwt.getPayload(CLAIM_JTI));
+
+            // 身份声明必须完整
+            if (userId == null || StrUtil.isBlank(jti)) {
+                log.debug("令牌缺少有效身份声明");
                 return null;
             }
 
-            return Long.valueOf(userId);
-        } catch (Exception e) {
-            log.debug("格式非法 / 验签过程异常：{}", e.getMessage());
+            // 当前活跃令牌校验，被互踢 / 已登出 / Redis 已过期都会失败
+            String activeJti = redisUtils.getString(TOKEN_KEY_PREFIX + userId);
+            if (activeJti == null || !activeJti.equals(jti)) {
+                log.debug("令牌不在活跃白名单 | userId={}", userId);
+                return null;
+            }
 
+            // 校验通过返回用户ID
+            return userId;
+        } catch (Exception e) {
+            log.debug("令牌校验失败 | reason={}", e.getMessage());
             return null;
         }
     }
 
     @Override
     public void removeToken(Long userId) {
-        try {
-            String jti = (String) redisUtils.get(USER_KEY_PREFIX + userId);
-            if (jti != null) {
-                redisUtils.delete(TOKEN_KEY_PREFIX + jti);
-            }
-            redisUtils.delete(USER_KEY_PREFIX + userId);
-        } catch (Exception e) {
-            log.warn("移除令牌失败，将依赖 TTL 自然过期 | userId={}", userId, e);
-        }
-        // TODO: 当前逻辑为非原子性，存在并发可能，后续修复
+        redisUtils.deleteString(TOKEN_KEY_PREFIX + userId);
     }
 
     /**
@@ -106,5 +108,41 @@ public class TokenServiceImpl implements TokenService {
      */
     private byte[] secretBytes() {
         return properties.getSecret().getBytes(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 读取 JWT 令牌唯一ID
+     *
+     * @param payload jti 声明原始值
+     * @return jti 声明值 <p>
+     * 非字符串时返回 {@code null}
+     */
+    private String readJti(Object payload) {
+        return payload instanceof String ? (String) payload : null;
+    }
+
+    /**
+     * 读取 JWT 用户ID
+     * <p>
+     * 支持 Number 与字符串类型的 uid 声明
+     *
+     * @param payload uid 声明原始值
+     * @return 用户ID <p>
+     * 声明缺失、类型不支持或格式非法时返回 {@code null}
+     */
+    private Long readUserId(Object payload) {
+        if (payload instanceof Number) {
+            return ((Number) payload).longValue();
+        }
+
+        if (payload instanceof String) {
+            try {
+                return Long.parseLong((String) payload);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        return null;
     }
 }
