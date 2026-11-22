@@ -176,12 +176,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         if (userEntityList.size() != ids.size()) {
             throw new BusinessException(USER_NOT_FOUND, "部分用户不存在或已被删除，请刷新后重试");
         }
-
         // 不能删除当前登录账号
         if (ids.contains(SecurityUser.getUserId())) {
             throw new BusinessException(USER_SELF_DELETE_FORBIDDEN);
         }
-
         // 超管批次整体拒绝
         boolean containsSuper = userEntityList.stream()
                 .anyMatch(user -> IS_SUPER_ADMIN.getValue().equals(user.getIsSuperAdmin()));
@@ -189,22 +187,28 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new BusinessException(USER_SUPER_ADMIN_DELETE_FORBIDDEN);
         }
 
-        // 墓碑重命名 + 逻辑删 + 记录删除时间：逐行处理
-        Date now = new Date();
-        for (SysUserEntity user : userEntityList) {
-            this.lambdaUpdate()
-                    .eq(SysUserEntity::getId, user.getId())
-                    .set(SysUserEntity::getUsername, buildTombstone(user.getUsername(), user.getId()))
-                    .set(SysUserEntity::getMobile, buildTombstone(user.getMobile(), user.getId()))
-                    .set(SysUserEntity::getEmail, buildTombstone(user.getEmail(), user.getId()))
-                    .set(SysUserEntity::getIsDeleted, DELETED.getValue())
-                    .set(SysUserEntity::getDeleteTime, now)
-                    .update();
+        // 墓碑重命名，逻辑删，记录删除时间
+        Date deleteTime = new Date();
+        List<SysUserEntity> tombstones = userEntityList.stream()
+                .map(user -> {
+                    SysUserEntity item = new SysUserEntity();
+                    item.setId(user.getId());
+                    item.setUsername(buildTombstone(user.getUsername(), user.getId()));
+                    item.setMobile(buildTombstone(user.getMobile(), user.getId()));
+                    item.setEmail(buildTombstone(user.getEmail(), user.getId()));
+                    item.setIsDeleted(DELETED.getValue());
+                    item.setDeleteTime(deleteTime);
+                    return item;
+                })
+                .collect(Collectors.toList());
+
+        int updated = baseMapper.updateBatchTombstones(tombstones);
+        if (updated != tombstones.size()) {
+            throw new BusinessException(USER_NOT_FOUND, "部分用户不存在或已被删除，请刷新后重试");
         }
 
         // 解除用户角色绑定关系
         userRoleService.deleteByUserIds(ids);
-
         // 立即失效被删用户的已签发令牌
         userEntityList.forEach(user -> tokenService.removeToken(user.getId()));
     }

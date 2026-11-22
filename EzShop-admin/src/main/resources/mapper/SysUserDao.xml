@@ -21,4 +21,39 @@
           AND m.perms IS NOT NULL
     </select>
 
+    <update id="updateBatchTombstones">
+        UPDATE sys_user
+        SET
+            username = CASE
+                <foreach collection="tombstones" item="item">
+                    WHEN id = #{item.id} THEN #{item.username}
+                </foreach>
+            END,
+            mobile = CASE
+                <foreach collection="tombstones" item="item">
+                    WHEN id = #{item.id} THEN #{item.mobile}
+                </foreach>
+            END,
+            email = CASE
+                <foreach collection="tombstones" item="item">
+                    WHEN id = #{item.id} THEN #{item.email}
+                </foreach>
+            END,
+            is_deleted = CASE
+                <foreach collection="tombstones" item="item">
+                    WHEN id = #{item.id} THEN #{item.isDeleted}
+                </foreach>
+            END,
+            delete_time = CASE
+                <foreach collection="tombstones" item="item">
+                    WHEN id = #{item.id} THEN #{item.deleteTime}
+                </foreach>
+            END
+        WHERE is_deleted = 0
+          AND id IN
+            <foreach collection="tombstones" item="item" open="(" separator="," close=")">
+                #{item.id}
+            </foreach>
+    </update>
+
 </mapper>
