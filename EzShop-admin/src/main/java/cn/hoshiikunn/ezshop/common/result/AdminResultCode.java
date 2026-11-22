@@ -57,6 +57,7 @@ public enum AdminResultCode implements IResultCode {
     MENU_COMPONENT_NOT_ALLOWED(104013, "菜单不可设置组件路径"),
     MENU_VISIBLE_NOT_ALLOWED(104014, "菜单不可设置可见性"),
     MENU_OPEN_STYLE_NOT_ALLOWED(104015, "菜单不可设置打开方式"),
+    MENU_ICON_NOT_ALLOWED(104016, "菜单不可设置图标"),
     ;
 
     // 响应码
