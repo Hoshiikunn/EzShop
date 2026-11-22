@@ -3,7 +3,7 @@ package cn.hoshiikunn.ezshop.modules.security.token;
 import cn.hoshiikunn.ezshop.modules.sys.vo.LoginTokenVO;
 
 /**
- * 令牌服务层
+ * 令牌业务层
  */
 public interface TokenService {
 
