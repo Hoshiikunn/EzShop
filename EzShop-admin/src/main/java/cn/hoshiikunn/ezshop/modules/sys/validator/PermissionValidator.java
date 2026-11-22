@@ -43,6 +43,10 @@ public class PermissionValidator implements MenuValidator {
         if (dto.getOpenStyle() != null) {
             throw new BusinessException(MENU_OPEN_STYLE_NOT_ALLOWED, "权限节点不可设置打开方式");
         }
+        // 权限节点不可设置图标
+        if (StrUtil.isNotBlank(dto.getIcon())) {
+            throw new BusinessException(MENU_ICON_NOT_ALLOWED, "权限节点不可设置图标");
+        }
     }
 
     @Override
