@@ -52,6 +52,14 @@ public interface SysUserRoleService extends BaseService<SysUserRoleEntity> {
     List<SysRoleEntity> getRolesByUserId(Long userId);
 
     /**
+     * 获取用户绑定的启用角色名称
+     *
+     * @param userId 用户ID
+     * @return 启用角色名称列表
+     */
+    List<String> getEnabledRoleNamesByUserId(Long userId);
+
+    /**
      * 根据用户ID集合批量删除用户角色绑定
      *
      * @param userIds 用户ID集合

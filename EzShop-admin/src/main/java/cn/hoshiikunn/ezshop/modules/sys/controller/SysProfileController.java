@@ -6,9 +6,11 @@ import cn.hoshiikunn.ezshop.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 个人资料控制层
@@ -24,6 +26,16 @@ public class SysProfileController {
     @GetMapping
     @Operation(summary = "个人资料")
     public Result<SysProfileVO> profile() {
-        return Result.ok(profileService.getProfile());
+        SysProfileVO profile = profileService.getProfile();
+
+        return Result.ok(profile);
+    }
+
+    @GetMapping("/roles")
+    @Operation(summary = "已绑定角色")
+    public Result<List<String>> roles() {
+        List<String> roles = profileService.getRoles();
+
+        return Result.ok(roles);
     }
 }

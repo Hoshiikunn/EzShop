@@ -4,14 +4,16 @@ import cn.hoshiikunn.ezshop.exception.BusinessException;
 import cn.hoshiikunn.ezshop.modules.security.user.SecurityUser;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysProfileService;
+import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysProfileVO;
 import cn.hutool.core.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.USER_NOT_FOUND;
-import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
 
 /**
  * 个人资料业务实现类
@@ -21,10 +23,11 @@ import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
 public class SysProfileServiceImpl implements SysProfileService {
 
     private final SysUserService userService;
+    private final SysUserRoleService userRoleService;
 
     @Override
     public SysProfileVO getProfile() {
-        SysUserEntity user = userService.getById(currentUserId());
+        SysUserEntity user = userService.getById(SecurityUser.requireUserId());
         if (user == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
@@ -32,17 +35,11 @@ public class SysProfileServiceImpl implements SysProfileService {
         return BeanUtil.toBean(user, SysProfileVO.class);
     }
 
-    /**
-     * 当前用户ID
-     *
-     * @return 用户ID
-     */
-    private Long currentUserId() {
-        Long userId = SecurityUser.getUserId();
-        if (userId == null) {
-            throw new BusinessException(UNAUTHORIZED);
-        }
+    @Override
+    public List<String> getRoles() {
+        Long userId = SecurityUser.requireUserId();
 
-        return userId;
+        return userRoleService.getEnabledRoleNamesByUserId(userId);
     }
+
 }
