@@ -65,22 +65,12 @@ public class SysAuthServiceImpl implements SysAuthService {
 
     @Override
     public void logout() {
-        Long userId = SecurityUser.getUserId();
-        if (userId == null) {
-            log.warn("登出未获取到用户身份");
-            throw new BusinessException(UNAUTHORIZED);
-        }
-
-        tokenService.removeToken(userId);
+        tokenService.removeToken(SecurityUser.requireUserId());
     }
 
     @Override
     public List<SysMenuTreeVO> getNavMenus() {
-        Long userId = SecurityUser.getUserId();
-        if (userId == null) {
-            throw new BusinessException(UNAUTHORIZED);
-        }
-
+        Long userId = SecurityUser.requireUserId();
         SysUserEntity user = userService.getById(userId);
         if (user == null || DISABLE.getValue().equals(user.getStatus())) {
             throw new BusinessException(UNAUTHORIZED);
