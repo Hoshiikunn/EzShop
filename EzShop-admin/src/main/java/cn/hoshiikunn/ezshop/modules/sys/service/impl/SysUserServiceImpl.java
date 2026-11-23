@@ -12,10 +12,7 @@ import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
-import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleBriefVO;
-import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
-import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
-import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.*;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -27,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +44,11 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
 
     private final TokenService tokenService;
     private final SysUserRoleService userRoleService;
+
+    /**
+     * 重置密码长度
+     */
+    private static final int RESET_PASSWORD_LENGTH = 6;
 
     @Override
     public SysUserEntity getUserEntityByUsername(String username) {
@@ -256,6 +259,46 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     @Override
     public Set<String> getPermsByUserId(Long userId) {
         return baseMapper.selectPermsByUserId(userId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public SysUserResetPasswordVO resetPassword(Long id) {
+        Long operatorId = SecurityUser.requireUserId();
+
+        // 不允许管理员通过重置密码接口绕过原密码校验修改自己
+        if (Objects.equals(id, operatorId)) {
+            throw new BusinessException(USER_SELF_RESET_PASSWORD_FORBIDDEN);
+        }
+        // 目标用户必须存在且未被逻辑删除
+        SysUserEntity targetUser = this.getById(id);
+        if (targetUser == null) {
+            throw new BusinessException(USER_NOT_FOUND);
+        }
+        // 超级管理员不可被重置
+        if (IS_SUPER_ADMIN.getValue().equals(targetUser.getIsSuperAdmin())) {
+            throw new BusinessException(USER_SUPER_ADMIN_RESET_PASSWORD_FORBIDDEN);
+        }
+
+        // 生成随机密码
+        String rawPassword = RandomUtil.randomString(RESET_PASSWORD_LENGTH);
+        // 构造更新的字段，触发乐观锁和审计字段填充
+        SysUserEntity updateEntity = new SysUserEntity();
+        updateEntity.setId(targetUser.getId());
+        updateEntity.setPassword(BCrypt.hashpw(rawPassword));
+        updateEntity.setVersion(targetUser.getVersion());
+        boolean updated = this.updateById(updateEntity);
+        if (!updated) {
+            throw new BusinessException(USER_NOT_FOUND, "密码重置失败，请刷新后重试");
+        }
+
+        // 重置成功后目标用户旧 Token 立即失效
+        tokenService.removeToken(targetUser.getId());
+
+        SysUserResetPasswordVO vo = new SysUserResetPasswordVO();
+        vo.setUsername(targetUser.getUsername());
+        vo.setResetPassword(rawPassword);
+        return vo;
     }
 
     /**
