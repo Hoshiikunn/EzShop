@@ -4,6 +4,7 @@ import cn.hoshiikunn.ezshop.exception.BusinessException;
 import cn.hoshiikunn.ezshop.modules.security.token.TokenService;
 import cn.hoshiikunn.ezshop.modules.security.user.SecurityUser;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysProfilePasswordDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysProfileUsernameDTO;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysProfileService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysUserRoleService;
@@ -82,4 +83,39 @@ public class SysProfileServiceImpl implements SysProfileService {
         tokenService.removeToken(userId);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void changeUsername(SysProfileUsernameDTO dto) {
+        Long userId = SecurityUser.requireUserId();
+
+        SysUserEntity user = userService.getById(userId);
+        if (user == null) {
+            throw new BusinessException(USER_NOT_FOUND);
+        }
+
+        // 用户名未变化时直接返回
+        if (StrUtil.equals(user.getUsername(), dto.getNewUsername())) {
+            return;
+        }
+
+        // 新用户名查重，排除自己
+        boolean exists = userService.lambdaQuery()
+                .eq(SysUserEntity::getUsername, dto.getNewUsername())
+                .ne(SysUserEntity::getId, userId)
+                .exists();
+        if (exists) {
+            throw new BusinessException(USER_USERNAME_EXISTS);
+        }
+
+        // 只更新 username，并携带旧 version，触发乐观锁和审计字段填充
+        SysUserEntity updateEntity = new SysUserEntity();
+        updateEntity.setId(user.getId());
+        updateEntity.setUsername(dto.getNewUsername());
+        updateEntity.setVersion(user.getVersion());
+
+        boolean updated = userService.updateById(updateEntity);
+        if (!updated) {
+            throw new BusinessException(USER_NOT_FOUND, "用户名修改失败，请刷新后重试");
+        }
+    }
 }
