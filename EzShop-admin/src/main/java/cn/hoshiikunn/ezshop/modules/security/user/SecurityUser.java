@@ -1,7 +1,10 @@
 package cn.hoshiikunn.ezshop.modules.security.user;
 
+import cn.hoshiikunn.ezshop.exception.BusinessException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+
+import static cn.hoshiikunn.ezshop.result.ResultCode.UNAUTHORIZED;
 
 /**
  * 当前登录用户工具
@@ -41,5 +44,22 @@ public class SecurityUser {
 
         Object principal = subject.getPrincipal();
         return principal instanceof Long ? (Long) principal : null;
+    }
+
+    /**
+     * 获取当前登录用户 ID
+     * <p>
+     * 要求当前线程必须存在登录上下文
+     *
+     * @return 当前 userId
+     * @throws BusinessException 登录上下文缺失或身份类型不符时抛出
+     */
+    public static Long requireUserId() {
+        Long userId = getUserId();
+        if (userId == null) {
+            throw new BusinessException(UNAUTHORIZED);
+        }
+
+        return userId;
     }
 }

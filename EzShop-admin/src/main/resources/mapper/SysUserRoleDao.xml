@@ -9,4 +9,13 @@
         WHERE ur.user_id = #{userId}
         ORDER BY r.sort, r.id
     </select>
+
+    <select id="selectEnabledRoleNamesByUserId" resultType="java.lang.String">
+        SELECT r.role_name
+        FROM sys_user_role ur
+                 JOIN sys_role r ON r.id = ur.role_id
+        WHERE ur.user_id = #{userId}
+          AND r.status = 1
+        ORDER BY r.sort, r.id
+    </select>
 </mapper>

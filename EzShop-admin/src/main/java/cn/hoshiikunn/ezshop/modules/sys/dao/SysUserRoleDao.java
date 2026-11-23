@@ -17,4 +17,12 @@ public interface SysUserRoleDao extends BaseMapper<SysUserRoleEntity> {
      * @return 角色列表
      */
     List<SysRoleEntity> selectRolesByUserId(Long userId);
+
+    /**
+     * 查询用户绑定的启用角色名称
+     *
+     * @param userId 用户ID
+     * @return 启用角色名称列表
+     */
+    List<String> selectEnabledRoleNamesByUserId(Long userId);
 }

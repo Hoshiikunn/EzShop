@@ -66,7 +66,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     @Override
     public Page<SysUserPageVO> pageUsers(SysUserPageDTO dto) {
         // 非超管无法查看超管账号
-        SysUserEntity viewer = this.getById(SecurityUser.getUserId());
+        SysUserEntity viewer = this.getById(SecurityUser.requireUserId());
         boolean viewerIsSuper = viewer != null
                 && IS_SUPER_ADMIN.getValue().equals(viewer.getIsSuperAdmin());
 
@@ -96,7 +96,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         }
 
         // 非超管不可查看超管详情
-        SysUserEntity viewer = this.getById(SecurityUser.getUserId());
+        SysUserEntity viewer = this.getById(SecurityUser.requireUserId());
         boolean viewerIsSuper = viewer != null
                 && IS_SUPER_ADMIN.getValue().equals(viewer.getIsSuperAdmin());
         if (!viewerIsSuper && IS_SUPER_ADMIN.getValue().equals(userEntity.getIsSuperAdmin())) {
@@ -177,7 +177,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new BusinessException(USER_NOT_FOUND, "部分用户不存在或已被删除，请刷新后重试");
         }
         // 不能删除当前登录账号
-        if (ids.contains(SecurityUser.getUserId())) {
+        if (ids.contains(SecurityUser.requireUserId())) {
             throw new BusinessException(USER_SELF_DELETE_FORBIDDEN);
         }
         // 超管批次整体拒绝
@@ -233,7 +233,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         }
 
         // 不能禁用自己
-        if (disabling && userEntity.getId().equals(SecurityUser.getUserId())) {
+        if (disabling && userEntity.getId().equals(SecurityUser.requireUserId())) {
             throw new BusinessException(USER_SELF_DISABLE_FORBIDDEN);
         }
 

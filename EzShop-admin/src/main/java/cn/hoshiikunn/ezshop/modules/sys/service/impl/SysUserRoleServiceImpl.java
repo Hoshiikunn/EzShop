@@ -109,6 +109,15 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleDao, SysU
     }
 
     @Override
+    public List<String> getEnabledRoleNamesByUserId(Long userId) {
+        if (userId == null) {
+            return Collections.emptyList();
+        }
+
+        return baseMapper.selectEnabledRoleNamesByUserId(userId);
+    }
+
+    @Override
     public void deleteByUserIds(Set<Long> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return;
