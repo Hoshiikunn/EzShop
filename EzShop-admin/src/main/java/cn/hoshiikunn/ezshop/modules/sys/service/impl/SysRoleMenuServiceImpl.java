@@ -5,9 +5,7 @@ import cn.hoshiikunn.ezshop.exception.BusinessException;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysMenuDao;
 import cn.hoshiikunn.ezshop.modules.sys.dao.SysRoleMenuDao;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysMenuEntity;
-import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleEntity;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysRoleMenuEntity;
-import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleMenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static cn.hoshiikunn.ezshop.common.enums.CommonStatusEnum.ENABLE;
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_ID_REQUIRED;
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.MENU_NOT_FOUND;
 

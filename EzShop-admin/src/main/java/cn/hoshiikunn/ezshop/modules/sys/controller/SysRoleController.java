@@ -3,23 +3,23 @@ package cn.hoshiikunn.ezshop.modules.sys.controller;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleStatusDTO;
-import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysRoleService;
-import cn.hoshiikunn.ezshop.modules.sys.vo.*;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleInfoVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysRoleListVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysRolePageVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
 import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
-import javax.validation.Valid;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
