@@ -244,10 +244,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new BusinessException(USER_SELF_DISABLE_FORBIDDEN);
         }
 
-        this.lambdaUpdate()
-                .eq(SysUserEntity::getId, dto.getId())
-                .set(SysUserEntity::getStatus, dto.getStatus())
-                .update();
+        SysUserEntity updateEntity = new SysUserEntity();
+        updateEntity.setId(userEntity.getId());
+        updateEntity.setStatus(dto.getStatus());
+        updateEntity.setVersion(userEntity.getVersion());
+
+        this.updateById(updateEntity);
 
         // 只有禁用才踢令牌
         if (disabling) {
