@@ -1,15 +1,15 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysProfilePasswordDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysProfileService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysProfileVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -37,5 +37,13 @@ public class SysProfileController {
         List<String> roles = profileService.getRoles();
 
         return Result.ok(roles);
+    }
+
+    @PutMapping("/change/password")
+    @Operation(summary = "修改密码")
+    public Result<Void> changePassword(@Valid @RequestBody SysProfilePasswordDTO dto) {
+        profileService.changePassword(dto);
+
+        return Result.ok(null, "密码修改成功，请重新登录");
     }
 }
