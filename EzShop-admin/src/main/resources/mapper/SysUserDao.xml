@@ -39,6 +39,9 @@
                     WHEN id = #{item.id} THEN #{item.email}
                 </foreach>
             END,
+            version = version + 1,
+            updater = #{updater},
+            update_time = NOW(),
             is_deleted = CASE
                 <foreach collection="tombstones" item="item">
                     WHEN id = #{item.id} THEN #{item.isDeleted}
