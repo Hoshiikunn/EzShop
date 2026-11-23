@@ -8,6 +8,9 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
+/**
+ * 批量删除用户参数
+ */
 @Data
 @Schema(description = "批量删除用户参数")
 public class SysUserBatchDeleteDTO implements Serializable {

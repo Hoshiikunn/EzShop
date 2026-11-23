@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 角色简要信息
+ */
 @Data
 @Schema(description = "角色简要信息")
 public class SysRoleBriefVO implements Serializable {
