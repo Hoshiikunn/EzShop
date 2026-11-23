@@ -7,8 +7,8 @@ import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Component;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
-import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.PERMISSION;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.MENU;
+import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.PERMISSION;
 
 /**
  * 权限节点校验器

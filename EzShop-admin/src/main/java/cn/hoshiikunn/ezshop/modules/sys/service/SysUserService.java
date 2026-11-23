@@ -11,7 +11,6 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserResetPasswordVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import java.util.List;
 import java.util.Set;
 
 /**

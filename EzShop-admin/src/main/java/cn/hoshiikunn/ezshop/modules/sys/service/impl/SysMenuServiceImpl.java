@@ -24,9 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
-import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuOpenStyleEnum.INTERNAL;
 import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuTypeEnum.*;
-import static cn.hoshiikunn.ezshop.modules.sys.enums.MenuVisibleEnum.VISIBLE;
 
 /**
  * 菜单业务实现类

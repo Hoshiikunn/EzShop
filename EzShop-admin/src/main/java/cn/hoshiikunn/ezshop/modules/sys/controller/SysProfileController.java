@@ -1,6 +1,7 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysProfilePasswordDTO;
+import cn.hoshiikunn.ezshop.modules.sys.dto.SysProfileUsernameDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysProfileService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysProfileVO;
 import cn.hoshiikunn.ezshop.result.Result;
@@ -45,5 +46,13 @@ public class SysProfileController {
         profileService.changePassword(dto);
 
         return Result.ok(null, "密码修改成功，请重新登录");
+    }
+
+    @PutMapping("/change/username")
+    @Operation(summary = "修改用户名")
+    public Result<Void> changeUsername(@Valid @RequestBody SysProfileUsernameDTO dto) {
+        profileService.changeUsername(dto);
+
+        return Result.ok(null, "用户名修改成功");
     }
 }

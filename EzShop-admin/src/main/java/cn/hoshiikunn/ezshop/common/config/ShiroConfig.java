@@ -2,10 +2,10 @@ package cn.hoshiikunn.ezshop.common.config;
 
 import cn.hoshiikunn.ezshop.modules.security.shiro.JwtFilter;
 import cn.hoshiikunn.ezshop.modules.security.shiro.JwtRealm;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.config.ShiroFilterConfiguration;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
