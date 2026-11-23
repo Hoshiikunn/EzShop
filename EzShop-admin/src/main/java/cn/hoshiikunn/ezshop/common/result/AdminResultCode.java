@@ -32,6 +32,8 @@ public enum AdminResultCode implements IResultCode {
     USER_SUPER_ADMIN_DISABLE_FORBIDDEN(102007, "不可禁用超级管理员"),
     USER_SELF_DISABLE_FORBIDDEN(102008, "不可禁用自己"),
     USER_DISABLED(102009, "账号已被禁用"),
+    USER_OLD_PASSWORD_ERROR(102010, "原密码不正确"),
+    USER_PASSWORD_SAME(102011, "新密码不能与旧密码相同"),
 
     // ==================== 角色模块 - 103 ====================
     ROLE_NOT_FOUND(103001, "角色不存在"),
