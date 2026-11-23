@@ -155,15 +155,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         // 检查唯一性
         checkUnique(dto);
         // 组装修改内容
-        boolean updated = this.lambdaUpdate()
-                .eq(SysUserEntity::getId, userEntity.getId())
-                .set(SysUserEntity::getUsername, dto.getUsername())
-                .set(SysUserEntity::getRealName, dto.getRealName())
-                .set(SysUserEntity::getGender, dto.getGender())
-                .set(SysUserEntity::getMobile, StrUtil.blankToDefault(dto.getMobile(), null))
-                .set(SysUserEntity::getEmail, StrUtil.blankToDefault(dto.getEmail(), null))
-                .set(SysUserEntity::getAvatarUrl, StrUtil.blankToDefault(dto.getAvatarUrl(), null))
-                .update();
+        SysUserEntity updateEntity = new SysUserEntity();
+        updateEntity.setId(userEntity.getId());
+        updateEntity.setVersion(userEntity.getVersion());
+        updateEntity.setUsername(dto.getUsername());
+        updateEntity.setRealName(dto.getRealName());
+        updateEntity.setGender(dto.getGender());
+        updateEntity.setMobile(StrUtil.blankToDefault(dto.getMobile(), null));
+        updateEntity.setEmail(StrUtil.blankToDefault(dto.getEmail(), null));
+        updateEntity.setAvatarUrl(StrUtil.blankToDefault(dto.getAvatarUrl(), null));
+
+        boolean updated = this.updateById(updateEntity);
         if (!updated) {
             throw new BusinessException(USER_NOT_FOUND, "被修改的用户不存在");
         }
@@ -174,13 +176,15 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void batchDeleteUsers(Set<Long> ids) {
+        Long operatorId = SecurityUser.requireUserId();
+
         // 数量比对
         List<SysUserEntity> userEntityList = this.listByIds(ids);
         if (userEntityList.size() != ids.size()) {
             throw new BusinessException(USER_NOT_FOUND, "部分用户不存在或已被删除，请刷新后重试");
         }
         // 不能删除当前登录账号
-        if (ids.contains(SecurityUser.requireUserId())) {
+        if (ids.contains(operatorId)) {
             throw new BusinessException(USER_SELF_DELETE_FORBIDDEN);
         }
         // 超管批次整体拒绝
@@ -205,7 +209,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
                 })
                 .collect(Collectors.toList());
 
-        int updated = baseMapper.updateBatchTombstones(tombstones);
+        int updated = baseMapper.updateBatchTombstones(tombstones, operatorId);
         if (updated != tombstones.size()) {
             throw new BusinessException(USER_NOT_FOUND, "部分用户不存在或已被删除，请刷新后重试");
         }
@@ -240,10 +244,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new BusinessException(USER_SELF_DISABLE_FORBIDDEN);
         }
 
-        this.lambdaUpdate()
-                .eq(SysUserEntity::getId, dto.getId())
-                .set(SysUserEntity::getStatus, dto.getStatus())
-                .update();
+        SysUserEntity updateEntity = new SysUserEntity();
+        updateEntity.setId(userEntity.getId());
+        updateEntity.setStatus(dto.getStatus());
+        updateEntity.setVersion(userEntity.getVersion());
+
+        this.updateById(updateEntity);
 
         // 只有禁用才踢令牌
         if (disabling) {

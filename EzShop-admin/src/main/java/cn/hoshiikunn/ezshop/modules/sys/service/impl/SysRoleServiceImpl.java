@@ -110,12 +110,13 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
         }
 
         // 更新角色基础信息
-        boolean updated = this.lambdaUpdate()
-                .eq(SysRoleEntity::getId, roleEntity.getId())
-                .set(SysRoleEntity::getRoleName, dto.getRoleName())
-                .set(SysRoleEntity::getSort, dto.getSort())
-                .set(SysRoleEntity::getRemark, StrUtil.blankToDefault(dto.getRemark(), null))
-                .update();
+        SysRoleEntity updateEntity = new SysRoleEntity();
+        updateEntity.setId(roleEntity.getId());
+        updateEntity.setRoleName(dto.getRoleName());
+        updateEntity.setSort(dto.getSort());
+        updateEntity.setRemark(StrUtil.blankToDefault(dto.getRemark(), null));
+
+        boolean updated = this.updateById(updateEntity);
         if (!updated) {
             throw new BusinessException(ROLE_NOT_FOUND, "被修改的角色不存在");
         }
@@ -167,10 +168,11 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
         }
 
         // 更新角色状态
-        boolean updated = this.lambdaUpdate()
-                .eq(SysRoleEntity::getId, roleEntity.getId())
-                .set(SysRoleEntity::getStatus, dto.getStatus())
-                .update();
+        SysRoleEntity updateEntity = new SysRoleEntity();
+        updateEntity.setId(roleEntity.getId());
+        updateEntity.setStatus(dto.getStatus());
+
+        boolean updated = this.updateById(updateEntity);
         if (!updated) {
             throw new BusinessException(ROLE_NOT_FOUND, "被变更的角色不存在");
         }

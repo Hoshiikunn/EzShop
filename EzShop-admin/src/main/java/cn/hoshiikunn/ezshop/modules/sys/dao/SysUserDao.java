@@ -3,6 +3,7 @@ package cn.hoshiikunn.ezshop.modules.sys.dao;
 import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Set;
@@ -26,5 +27,6 @@ public interface SysUserDao extends BaseMapper<SysUserEntity> {
      * @param tombstones 用户墓碑参数，必须包含用户ID
      * @return 实际更新数量
      */
-    int updateBatchTombstones(List<SysUserEntity> tombstones);
+    int updateBatchTombstones(@Param("tombstones") List<SysUserEntity> tombstones,
+                              @Param("updater") Long updater);
 }

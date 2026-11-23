@@ -68,10 +68,12 @@ public class SysProfileServiceImpl implements SysProfileService {
             throw new BusinessException(USER_PASSWORD_SAME);
         }
 
-        boolean updated = userService.lambdaUpdate()
-                .eq(SysUserEntity::getId, userId)
-                .set(SysUserEntity::getPassword, BCrypt.hashpw(dto.getNewPassword()))
-                .update();
+        SysUserEntity updateEntity = new SysUserEntity();
+        updateEntity.setId(user.getId());
+        updateEntity.setPassword(BCrypt.hashpw(dto.getNewPassword()));
+        updateEntity.setVersion(user.getVersion());
+
+        boolean updated = userService.updateById(updateEntity);
         if (!updated) {
             throw new BusinessException(USER_NOT_FOUND, "密码修改失败，请刷新后重试");
         }
