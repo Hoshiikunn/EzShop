@@ -6,6 +6,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 个人资料
+ */
 @Data
 @Schema(description = "个人资料")
 public class SysProfileVO implements Serializable {

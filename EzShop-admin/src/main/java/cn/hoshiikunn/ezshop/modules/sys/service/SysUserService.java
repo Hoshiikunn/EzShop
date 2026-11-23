@@ -8,6 +8,7 @@ import cn.hoshiikunn.ezshop.modules.sys.entity.SysUserEntity;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserResetPasswordVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
@@ -94,4 +95,12 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @return perms 集合
      */
     Set<String> getPermsByUserId(Long userId);
+
+    /**
+     * 管理员重置用户密码
+     *
+     * @param id 目标用户ID
+     * @return 用户名与一次性重置密码
+     */
+    SysUserResetPasswordVO resetPassword(Long id);
 }

@@ -8,6 +8,7 @@ import cn.hoshiikunn.ezshop.modules.sys.service.SysUserService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInfoVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserInitVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
+import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserResetPasswordVO;
 import cn.hoshiikunn.ezshop.result.Result;
 import cn.hoshiikunn.ezshop.validation.group.AddGroup;
 import cn.hoshiikunn.ezshop.validation.group.UpdateGroup;
@@ -84,5 +85,14 @@ public class SysUserController {
         userService.changeUserStatus(dto);
 
         return Result.ok(null, "变更成功");
+    }
+
+    @PostMapping("/{id}/reset/password")
+    @Operation(summary = "重置用户密码")
+    @RequiresPermissions("sys:user:reset-password")
+    public Result<SysUserResetPasswordVO> resetPassword(@PathVariable Long id) {
+        SysUserResetPasswordVO vo = userService.resetPassword(id);
+
+        return Result.ok(vo, "重置成功");
     }
 }
