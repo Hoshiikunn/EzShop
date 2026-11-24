@@ -184,13 +184,15 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
 
     @Override
     public List<SysMenuTreeVO> getNavMenus(Long userId, boolean superAdmin) {
-        // 查全量菜单
-        List<SysMenuEntity> allMenus = listAllMenus();
+        // 查全量菜单并保留目录类和菜单类
+        List<SysMenuEntity> navMenus = listAllMenus().stream()
+                .filter(menu -> !PERMISSION.getValue().equals(menu.getMenuType()))
+                .collect(Collectors.toList());
 
         // 超管返回全量导航
         if (superAdmin) {
             return TreeUtils.buildTree(
-                    BeanUtil.copyToList(allMenus, SysMenuTreeVO.class),
+                    BeanUtil.copyToList(navMenus, SysMenuTreeVO.class),
                     Comparator.comparing(SysMenuTreeVO::getSort)
                             .thenComparing(SysMenuTreeVO::getId)
             );
@@ -204,7 +206,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
         }
 
         // 按授权菜单过滤并转换VO
-        List<SysMenuTreeVO> nodes = allMenus.stream()
+        List<SysMenuTreeVO> nodes = navMenus.stream()
                 .filter(menu -> roleMenuIds.contains(menu.getId()))
                 .map(menu -> BeanUtil.toBean(menu, SysMenuTreeVO.class))
                 .collect(Collectors.toList());

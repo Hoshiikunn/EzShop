@@ -17,9 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
+import static cn.hoshiikunn.ezshop.modules.sys.enums.IsSuperAdminEnum.IS_SUPER_ADMIN;
 
 /**
  * 个人资料业务实现类
@@ -117,5 +120,26 @@ public class SysProfileServiceImpl implements SysProfileService {
         if (!updated) {
             throw new BusinessException(USER_NOT_FOUND, "用户名修改失败，请刷新后重试");
         }
+    }
+
+    @Override
+    public List<String> getPermissions() {
+        // 取当前登录的用户实体
+        Long userId = SecurityUser.requireUserId();
+        SysUserEntity user = userService.getById(userId);
+        if (user == null) {
+            throw new BusinessException(USER_NOT_FOUND);
+        }
+
+        // 超级管理员返回全量权限标识
+        if (IS_SUPER_ADMIN.getValue().equals(user.getIsSuperAdmin())) {
+            return Collections.singletonList("*");
+        }
+
+        // 普通用户返回启用角色绑定的权限标识，去空并排序
+        return userService.getPermsByUserId(userId).stream()
+                .filter(StrUtil::isNotBlank)
+                .sorted()
+                .collect(Collectors.toList());
     }
 }
