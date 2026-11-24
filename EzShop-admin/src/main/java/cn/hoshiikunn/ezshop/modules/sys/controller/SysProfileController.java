@@ -55,4 +55,12 @@ public class SysProfileController {
 
         return Result.ok(null, "用户名修改成功");
     }
+
+    @GetMapping("/permissions")
+    @Operation(summary = "权限标识")
+    public Result<List<String>> permissions() {
+        List<String> permissions = profileService.getPermissions();
+
+        return Result.ok(permissions);
+    }
 }

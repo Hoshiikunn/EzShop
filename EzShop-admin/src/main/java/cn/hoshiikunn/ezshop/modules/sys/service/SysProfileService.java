@@ -36,4 +36,9 @@ public interface SysProfileService {
      * @param dto 修改用户名参数
      */
     void changeUsername(SysProfileUsernameDTO dto);
+
+    /**
+     * 获取当前登录用户权限标识
+     */
+    List<String> getPermissions();
 }
