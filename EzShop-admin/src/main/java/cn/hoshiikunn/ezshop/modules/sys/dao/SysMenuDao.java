@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Set;
 
+/**
+ * 菜单数据访问层
+ */
 @Mapper
 public interface SysMenuDao extends BaseMapper<SysMenuEntity> {
 
