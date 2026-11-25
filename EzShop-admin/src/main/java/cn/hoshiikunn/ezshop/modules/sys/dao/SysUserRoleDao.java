@@ -7,6 +7,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+/**
+ * 用户角色数据访问层
+ */
 @Mapper
 public interface SysUserRoleDao extends BaseMapper<SysUserRoleEntity> {
 

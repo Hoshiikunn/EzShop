@@ -70,5 +70,10 @@
             <!-- 仅开发 不打包 -->
             <optional>true</optional>
         </dependency>
+        <!-- IP 归属地解析 -->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+        </dependency>
     </dependencies>
 </project>

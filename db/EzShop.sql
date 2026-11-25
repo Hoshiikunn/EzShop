@@ -1,8 +1,18 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/20 22:05:20                          */
+/* Created on:     2026/11/25 23:59:45                          */
 /*==============================================================*/
 
+
+drop index idx_create_time on sys_login_log;
+
+drop index idx_ip on sys_login_log;
+
+drop index idx_user_id on sys_login_log;
+
+drop index idx_username on sys_login_log;
+
+drop table if exists sys_login_log;
 
 drop index idx_pid on sys_menu;
 
@@ -31,6 +41,61 @@ drop index idx_role_id on sys_user_role;
 drop index uk_user_role on sys_user_role;
 
 drop table if exists sys_user_role;
+
+/*==============================================================*/
+/* Table: sys_login_log                                         */
+/*==============================================================*/
+create table sys_login_log
+(
+   id                   bigint not null comment '日志ID',
+   user_id              bigint comment '用户ID',
+   username             varchar(64) comment '用户名',
+   ip                   varchar(45) comment '登录IP',
+   login_location       varchar(100) comment '登录地点',
+   os                   varchar(50) comment '操作系统',
+   browser              varchar(50) comment '浏览器',
+   status               tinyint not null comment '状态 0-失败 1-成功',
+   message              varchar(255) comment '结果描述',
+   creator              bigint comment '创建者',
+   create_time          datetime comment '创建时间',
+   updater              bigint comment '更新者',
+   update_time          datetime comment '更新时间',
+   primary key (id)
+);
+
+alter table sys_login_log comment '登录日志表';
+
+/*==============================================================*/
+/* Index: idx_username                                          */
+/*==============================================================*/
+create index idx_username on sys_login_log
+(
+   username
+);
+
+/*==============================================================*/
+/* Index: idx_user_id                                           */
+/*==============================================================*/
+create index idx_user_id on sys_login_log
+(
+   user_id
+);
+
+/*==============================================================*/
+/* Index: idx_ip                                                */
+/*==============================================================*/
+create index idx_ip on sys_login_log
+(
+   ip
+);
+
+/*==============================================================*/
+/* Index: idx_create_time                                       */
+/*==============================================================*/
+create index idx_create_time on sys_login_log
+(
+   create_time
+);
 
 /*==============================================================*/
 /* Table: sys_menu                                              */
