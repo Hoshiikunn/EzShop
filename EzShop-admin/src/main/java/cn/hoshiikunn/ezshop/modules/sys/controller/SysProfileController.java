@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.common.annotation.OperLog;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysProfilePasswordDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysProfileUsernameDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysProfileService;
@@ -42,6 +43,7 @@ public class SysProfileController {
 
     @PutMapping("/change/password")
     @Operation(summary = "修改密码")
+    @OperLog(module = "个人中心", operation = "修改密码")
     public Result<Void> changePassword(@Valid @RequestBody SysProfilePasswordDTO dto) {
         profileService.changePassword(dto);
 
@@ -50,6 +52,7 @@ public class SysProfileController {
 
     @PutMapping("/change/username")
     @Operation(summary = "修改用户名")
+    @OperLog(module = "个人中心", operation = "修改用户名")
     public Result<Void> changeUsername(@Valid @RequestBody SysProfileUsernameDTO dto) {
         profileService.changeUsername(dto);
 
