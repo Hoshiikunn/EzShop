@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.common.annotation.OperLog;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserBatchDeleteDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
@@ -54,6 +55,7 @@ public class SysUserController {
 
     @PostMapping("/add")
     @Operation(summary = "添加用户")
+    @OperLog(module = "用户管理", operation = "添加用户")
     @RequiresPermissions("sys:user:add")
     public Result<SysUserInitVO> add(@Validated(AddGroup.class) @RequestBody SysUserDTO dto) {
         SysUserInitVO vo = userService.addUser(dto);
@@ -63,6 +65,7 @@ public class SysUserController {
 
     @PutMapping("/update")
     @Operation(summary = "修改用户")
+    @OperLog(module = "用户管理", operation = "修改用户")
     @RequiresPermissions("sys:user:update")
     public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysUserDTO dto) {
         userService.updateUser(dto);
@@ -72,6 +75,7 @@ public class SysUserController {
 
     @PostMapping("/batch/delete")
     @Operation(summary = "批量删除用户")
+    @OperLog(module = "用户管理", operation = "删除用户")
     @RequiresPermissions("sys:user:delete")
     public Result<Void> batchDelete(@Valid @RequestBody SysUserBatchDeleteDTO dto) {
         userService.batchDeleteUsers(dto.getIds());
@@ -81,6 +85,7 @@ public class SysUserController {
 
     @PostMapping("/change/status")
     @Operation(summary = "变更用户状态")
+    @OperLog(module = "用户管理", operation = "变更用户状态")
     @RequiresPermissions("sys:user:status")
     public Result<Void> changeStatus(@Valid @RequestBody SysUserStatusDTO dto) {
         userService.changeUserStatus(dto);
@@ -90,6 +95,7 @@ public class SysUserController {
 
     @PostMapping("/{id}/reset/password")
     @Operation(summary = "重置用户密码")
+    @OperLog(module = "用户管理", operation = "重置用户密码")
     @RequiresPermissions("sys:user:reset-password")
     public Result<SysUserResetPasswordVO> resetPassword(@PathVariable Long id) {
         SysUserResetPasswordVO vo = userService.resetPassword(id);

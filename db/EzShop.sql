@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/25 23:59:45                          */
+/* Created on:     2026/11/26 23:40:38                          */
 /*==============================================================*/
 
 
@@ -17,6 +17,8 @@ drop table if exists sys_login_log;
 drop index idx_pid on sys_menu;
 
 drop table if exists sys_menu;
+
+drop table if exists sys_oper_log;
 
 drop index uk_role_key on sys_role;
 
@@ -129,6 +131,33 @@ create index idx_pid on sys_menu
 (
    pid
 );
+
+/*==============================================================*/
+/* Table: sys_oper_log                                          */
+/*==============================================================*/
+create table sys_oper_log
+(
+   id                   bigint not null comment '日志ID',
+   module               varchar(50) comment '所属模块',
+   operation            varchar(50) comment '操作内容',
+   user_id              bigint comment '用户ID',
+   username             varchar(64) comment '用户名',
+   request_method       varchar(10) comment '请求方式',
+   request_uri          varchar(255) comment '请求地址',
+   ip                   varchar(45) comment '操作IP',
+   oper_location        varchar(100) comment '操作地点',
+   request_params       varchar(2000) comment '请求参数',
+   status               tinyint not null default 1 comment '状态 0-失败 1-成功',
+   error_msg            varchar(500) comment '失败原因',
+   elapsed_ms           int comment '耗时 (毫秒)',
+   creator              bigint comment '创建者',
+   create_time          datetime comment '创建时间',
+   updater              bigint comment '更新者',
+   update_time          datetime comment '更新时间',
+   primary key (id)
+);
+
+alter table sys_oper_log comment '操作日志表';
 
 /*==============================================================*/
 /* Table: sys_role                                              */

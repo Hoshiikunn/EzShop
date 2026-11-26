@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.common.annotation.OperLog;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRolePageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysRoleStatusDTO;
@@ -62,6 +63,7 @@ public class SysRoleController {
 
     @PostMapping("/add")
     @Operation(summary = "添加角色")
+    @OperLog(module = "角色管理", operation = "添加角色")
     @RequiresPermissions("sys:role:add")
     public Result<Void> add(@Validated(AddGroup.class) @RequestBody SysRoleDTO dto) {
         roleService.addRole(dto);
@@ -71,6 +73,7 @@ public class SysRoleController {
 
     @PutMapping("/update")
     @Operation(summary = "修改角色")
+    @OperLog(module = "角色管理", operation = "修改角色")
     @RequiresPermissions("sys:role:update")
     public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysRoleDTO dto) {
         roleService.updateRole(dto);
@@ -80,6 +83,7 @@ public class SysRoleController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除角色")
+    @OperLog(module = "角色管理", operation = "删除角色")
     @RequiresPermissions("sys:role:delete")
     public Result<Void> delete(
             @PathVariable Long id,
@@ -92,6 +96,7 @@ public class SysRoleController {
 
     @PostMapping("/change/status")
     @Operation(summary = "变更角色状态")
+    @OperLog(module = "角色管理", operation = "变更角色状态")
     @RequiresPermissions("sys:role:status")
     public Result<Void> changeStatus(@Valid @RequestBody SysRoleStatusDTO dto) {
         roleService.changeRoleStatus(dto);

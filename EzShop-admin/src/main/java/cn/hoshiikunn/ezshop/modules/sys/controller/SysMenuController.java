@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.common.annotation.OperLog;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysMenuDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysMenuService;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysMenuInfoVO;
@@ -57,6 +58,7 @@ public class SysMenuController {
 
     @PostMapping("/add")
     @Operation(summary = "添加菜单")
+    @OperLog(module = "菜单管理", operation = "添加菜单")
     @RequiresPermissions("sys:menu:add")
     public Result<Void> add(@Validated(AddGroup.class) @RequestBody SysMenuDTO dto) {
         menuService.addMenu(dto);
@@ -66,6 +68,7 @@ public class SysMenuController {
 
     @PutMapping("/update")
     @Operation(summary = "修改菜单")
+    @OperLog(module = "菜单管理", operation = "修改菜单")
     @RequiresPermissions("sys:menu:update")
     public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysMenuDTO dto) {
         menuService.updateMenu(dto);
@@ -75,6 +78,7 @@ public class SysMenuController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除菜单")
+    @OperLog(module = "菜单管理", operation = "删除菜单")
     @RequiresPermissions("sys:menu:delete")
     public Result<Void> delete(@PathVariable Long id) {
         menuService.deleteMenu(id);

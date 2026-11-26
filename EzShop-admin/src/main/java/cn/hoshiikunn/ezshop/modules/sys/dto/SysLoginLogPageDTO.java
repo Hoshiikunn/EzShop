@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Positive;
 import java.util.Date;
 
 /**
@@ -24,7 +23,6 @@ public class SysLoginLogPageDTO extends BasePageDTO {
     private String username;
 
     @Schema(description = "用户ID")
-    @Positive(message = "用户ID必须大于0")
     private Long userId;
 
     @Schema(description = "登录IP")
