@@ -1,5 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
+import cn.hoshiikunn.ezshop.common.annotation.OperLog;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysLoginLogPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysOperLogPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysLoginLogService;
@@ -14,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 /**
  * 日志控制层
@@ -46,5 +47,25 @@ public class SysLogController {
         Page<SysOperLogPageVO> operLogPage = operLogService.pageOperLog(dto);
 
         return Result.ok(operLogPage);
+    }
+
+    @PostMapping("/login/batch/delete")
+    @Operation(summary = "批量删除登录日志")
+    @OperLog(module = "日志管理", operation = "批量删除登录日志")
+    @RequiresPermissions("sys:log:login:delete")
+    public Result<Void> batchDeleteLoginLog(@RequestBody Set<Long> logIds) {
+        loginLogService.batchDeleteLoginLogs(logIds);
+
+        return Result.ok(null, "删除成功");
+    }
+
+    @PostMapping("/oper/batch/delete")
+    @Operation(summary = "批量删除操作日志")
+    @OperLog(module = "日志管理", operation = "批量删除操作日志")
+    @RequiresPermissions("sys:log:oper:delete")
+    public Result<Void> batchDeleteOperLog(@RequestBody Set<Long> operIds) {
+        operLogService.batchDeleteOperLogs(operIds);
+
+        return Result.ok(null, "删除成功");
     }
 }
