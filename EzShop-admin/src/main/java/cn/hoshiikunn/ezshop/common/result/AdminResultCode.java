@@ -36,6 +36,8 @@ public enum AdminResultCode implements IResultCode {
     USER_PASSWORD_SAME(102011, "新密码不能与旧密码相同"),
     USER_SUPER_ADMIN_RESET_PASSWORD_FORBIDDEN(102012, "超级管理员密码不允许重置"),
     USER_SELF_RESET_PASSWORD_FORBIDDEN(102013, "不能重置当前登录账号"),
+    USER_IDS_REQUIRED(102014, "请选择要删除的用户"),
+    USER_IDS_SIZE_EXCEEDED(102015, "单次最多删除 100 个用户"),
 
     // ==================== 角色模块 - 103 ====================
     ROLE_NOT_FOUND(103001, "角色不存在"),
