@@ -18,12 +18,11 @@ public interface SysLoginLogService extends BaseService<SysLoginLogEntity> {
      * 写入登录日志
      *
      * @param username 尝试登录的用户名
-     * @param userId 用户ID
      * @param request 当前请求
      * @param status 登录状态
      * @param message 结果描述
      */
-    void recordLogin(String username, Long userId, HttpServletRequest request,
+    void recordLogin(String username, HttpServletRequest request,
                      LoginStatusEnum status, String message);
 
     /**

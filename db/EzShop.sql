@@ -1,14 +1,12 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/11/26 23:40:38                          */
+/* Created on:     2026/11/27 16:42:50                          */
 /*==============================================================*/
 
 
 drop index idx_create_time on sys_login_log;
 
 drop index idx_ip on sys_login_log;
-
-drop index idx_user_id on sys_login_log;
 
 drop index idx_username on sys_login_log;
 
@@ -50,7 +48,6 @@ drop table if exists sys_user_role;
 create table sys_login_log
 (
    id                   bigint not null comment '日志ID',
-   user_id              bigint comment '用户ID',
    username             varchar(64) comment '用户名',
    ip                   varchar(45) comment '登录IP',
    login_location       varchar(100) comment '登录地点',
@@ -73,14 +70,6 @@ alter table sys_login_log comment '登录日志表';
 create index idx_username on sys_login_log
 (
    username
-);
-
-/*==============================================================*/
-/* Index: idx_user_id                                           */
-/*==============================================================*/
-create index idx_user_id on sys_login_log
-(
-   user_id
 );
 
 /*==============================================================*/
@@ -141,7 +130,7 @@ create table sys_oper_log
    module               varchar(50) comment '所属模块',
    operation            varchar(50) comment '操作内容',
    user_id              bigint comment '用户ID',
-   username             varchar(64) comment '用户名',
+   username             varchar(64) comment '操作人员',
    request_method       varchar(10) comment '请求方式',
    request_uri          varchar(255) comment '请求地址',
    ip                   varchar(45) comment '操作IP',

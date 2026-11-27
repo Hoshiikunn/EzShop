@@ -47,14 +47,12 @@ public class SysAuthServiceImpl implements SysAuthService {
         // 用户不存在或密码错误
         SysUserEntity userEntity = userService.getUserEntityByUsername(username);
         if (userEntity == null || !BCrypt.checkpw(password, userEntity.getPassword())) {
-            loginLogService.recordLogin(username, userEntity == null ? null : userEntity.getId(),
-                    request, FAIL, USERNAME_OR_PASSWORD_ERROR.getMsg());
+            loginLogService.recordLogin(username, request, FAIL, USERNAME_OR_PASSWORD_ERROR.getMsg());
             throw new BusinessException(USERNAME_OR_PASSWORD_ERROR);
         }
         // 状态检查
         if (DISABLE.getValue().equals(userEntity.getStatus())) {
-            loginLogService.recordLogin(userEntity.getUsername(), userEntity.getId(),
-                    request, FAIL, USER_DISABLED.getMsg());
+            loginLogService.recordLogin(username, request, FAIL, USER_DISABLED.getMsg());
             throw new BusinessException(USER_DISABLED);
         }
 
@@ -66,7 +64,7 @@ public class SysAuthServiceImpl implements SysAuthService {
         // 回写登录IP和登录时间
         userService.updateLastLoginInfo(clientIp, userId);
         // 写入日志
-        loginLogService.recordLogin(userEntity.getUsername(), userId,
+        loginLogService.recordLogin(userEntity.getUsername(),
                 request, SUCCESS, "登录成功");
 
         return token;

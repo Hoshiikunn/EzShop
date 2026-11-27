@@ -14,11 +14,6 @@ import lombok.EqualsAndHashCode;
 public class SysLoginLogEntity extends BaseEntity {
 
     /**
-     * 用户ID
-     */
-    private Long userId;
-
-    /**
      * 用户名
      */
     private String username;

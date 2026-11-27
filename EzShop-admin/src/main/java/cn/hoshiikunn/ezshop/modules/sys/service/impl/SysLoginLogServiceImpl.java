@@ -38,7 +38,7 @@ public class SysLoginLogServiceImpl extends BaseServiceImpl<SysLoginLogDao, SysL
 
     // TODO: 当前为同步落库，提升性能建议使用 MQ
     @Override
-    public void recordLogin(String username, Long userId, HttpServletRequest request,
+    public void recordLogin(String username, HttpServletRequest request,
                             LoginStatusEnum status, String message) {
         // 提取客户端 IP 与浏览器标识
         String ip = IpUtils.getClientIp(request);
@@ -46,7 +46,6 @@ public class SysLoginLogServiceImpl extends BaseServiceImpl<SysLoginLogDao, SysL
 
         SysLoginLogEntity entity = new SysLoginLogEntity();
         entity.setUsername(username);
-        entity.setUserId(userId);
         entity.setIp(ip);
         entity.setLoginLocation(AddressUtils.getRealAddress(ip));
         entity.setOs(parseOs(userAgent));
@@ -65,7 +64,6 @@ public class SysLoginLogServiceImpl extends BaseServiceImpl<SysLoginLogDao, SysL
         // 分页查询并转换 VO
         Page<SysLoginLogEntity> result = this.page(page, this.lambdaQuery()
                 .like(StrUtil.isNotBlank(dto.getUsername()), SysLoginLogEntity::getUsername, dto.getUsername())
-                .eq(dto.getUserId() != null, SysLoginLogEntity::getUserId, dto.getUserId())
                 .like(StrUtil.isNotBlank(dto.getIp()), SysLoginLogEntity::getIp, dto.getIp())
                 .eq(dto.getStatus() != null, SysLoginLogEntity::getStatus, dto.getStatus())
                 .ge(dto.getCreateTimeBegin() != null, SysLoginLogEntity::getCreateTime, dto.getCreateTimeBegin())
@@ -73,6 +71,7 @@ public class SysLoginLogServiceImpl extends BaseServiceImpl<SysLoginLogDao, SysL
                 .orderByDesc(SysLoginLogEntity::getCreateTime)
                 .orderByDesc(SysLoginLogEntity::getId)
                 .getWrapper());
+
         return (Page<SysLoginLogPageVO>) result.convert(log -> BeanUtil.toBean(log, SysLoginLogPageVO.class));
     }
 

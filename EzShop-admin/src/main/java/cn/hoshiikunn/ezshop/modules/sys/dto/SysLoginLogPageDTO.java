@@ -22,9 +22,6 @@ public class SysLoginLogPageDTO extends BasePageDTO {
     @Length(max = 64, message = "用户名长度不可超过 64 字符")
     private String username;
 
-    @Schema(description = "用户ID")
-    private Long userId;
-
     @Schema(description = "登录IP")
     @Length(max = 45, message = "登录IP长度不可超过 45 字符")
     private String ip;
