@@ -22,10 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.hoshiikunn.ezshop.common.result.AdminResultCode.*;
@@ -305,6 +302,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
         vo.setUsername(targetUser.getUsername());
         vo.setResetPassword(rawPassword);
         return vo;
+    }
+
+    @Override
+    public Map<Long, String> getUsernameMapByIds(Collection<Long> userIds) {
+        // 空集合直接返回
+        if (userIds == null || userIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        return this.listByIds(userIds).stream()
+                .collect(Collectors.toMap(SysUserEntity::getId, SysUserEntity::getUsername));
     }
 
     /**
