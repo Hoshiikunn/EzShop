@@ -23,10 +23,7 @@ public class SysOperLogPageVO implements Serializable {
     @Schema(description = "操作内容")
     private String operation;
 
-    @Schema(description = "用户ID")
-    private Long userId;
-
-    @Schema(description = "用户名")
+    @Schema(description = "操作人员")
     private String username;
 
     @Schema(description = "请求方式")

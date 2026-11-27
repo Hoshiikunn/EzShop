@@ -31,7 +31,7 @@ public class SysLogController {
     private final SysOperLogService operLogService;
 
     @GetMapping("/login/page")
-    @Operation(summary = "分页条件查询")
+    @Operation(summary = "登录日志分页条件查询")
     @RequiresPermissions("sys:log:login:query")
     public Result<Page<SysLoginLogPageVO>> loginPage(@Validated @ParameterObject SysLoginLogPageDTO dto) {
         Page<SysLoginLogPageVO> loginLogPage = loginLogService.pageLoginLog(dto);

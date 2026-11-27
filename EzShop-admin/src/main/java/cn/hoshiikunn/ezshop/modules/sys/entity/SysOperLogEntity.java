@@ -29,7 +29,7 @@ public class SysOperLogEntity extends BaseEntity {
     private Long userId;
 
     /**
-     * 用户名
+     * 操作人员
      */
     private String username;
 

@@ -11,6 +11,8 @@ import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserPageVO;
 import cn.hoshiikunn.ezshop.modules.sys.vo.SysUserResetPasswordVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -102,4 +104,12 @@ public interface SysUserService extends BaseService<SysUserEntity> {
      * @return 用户名与一次性重置密码
      */
     SysUserResetPasswordVO resetPassword(Long id);
+
+    /**
+     * 批量获取用户当前用户名
+     *
+     * @param userIds 用户ID集合
+     * @return 用户ID与当前用户名映射
+     */
+    Map<Long, String> getUsernameMapByIds(Collection<Long> userIds);
 }
