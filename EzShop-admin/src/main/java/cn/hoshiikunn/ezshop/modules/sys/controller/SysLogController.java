@@ -1,6 +1,5 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
-import cn.hoshiikunn.ezshop.common.annotation.OperLog;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysLoginLogPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysOperLogPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.service.SysLoginLogService;
@@ -51,7 +50,6 @@ public class SysLogController {
 
     @PostMapping("/login/batch/delete")
     @Operation(summary = "批量删除登录日志")
-    @OperLog(module = "日志管理", operation = "批量删除登录日志")
     @RequiresPermissions("sys:log:login:delete")
     public Result<Void> batchDeleteLoginLog(@RequestBody Set<Long> logIds) {
         loginLogService.batchDeleteLoginLogs(logIds);
@@ -61,7 +59,6 @@ public class SysLogController {
 
     @PostMapping("/oper/batch/delete")
     @Operation(summary = "批量删除操作日志")
-    @OperLog(module = "日志管理", operation = "批量删除操作日志")
     @RequiresPermissions("sys:log:oper:delete")
     public Result<Void> batchDeleteOperLog(@RequestBody Set<Long> operIds) {
         operLogService.batchDeleteOperLogs(operIds);
