@@ -23,12 +23,9 @@ public class SysOperLogPageDTO extends BasePageDTO {
     @Length(max = 50, message = "操作内容长度不可超过 50 字符")
     private String operation;
 
-    @Schema(description = "用户名")
-    @Length(max = 64, message = "用户名长度不可超过 64 字符")
+    @Schema(description = "操作人员")
+    @Length(max = 64, message = "操作人员长度不可超过 64 字符")
     private String username;
-
-    @Schema(description = "用户ID")
-    private Long userId;
 
     @Schema(description = "操作IP")
     @Length(max = 45, message = "操作IP长度不可超过 45 字符")
