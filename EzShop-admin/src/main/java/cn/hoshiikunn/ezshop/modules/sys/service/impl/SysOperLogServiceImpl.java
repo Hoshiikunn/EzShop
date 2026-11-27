@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -60,5 +61,13 @@ public class SysOperLogServiceImpl extends BaseServiceImpl<SysOperLogDao, SysOpe
             vo.setUsername(usernameMap.getOrDefault(log.getUserId(), log.getUsername()));
             return vo;
         });
+    }
+
+    @Override
+    public void batchDeleteOperLogs(Set<Long> operIds) {
+        if (operIds == null || operIds.isEmpty()) {
+            return;
+        }
+        this.removeByIds(operIds);
     }
 }

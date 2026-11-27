@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 /**
  * 登录日志业务实现类
@@ -73,6 +74,14 @@ public class SysLoginLogServiceImpl extends BaseServiceImpl<SysLoginLogDao, SysL
                 .getWrapper());
 
         return (Page<SysLoginLogPageVO>) result.convert(log -> BeanUtil.toBean(log, SysLoginLogPageVO.class));
+    }
+
+    @Override
+    public void batchDeleteLoginLogs(Set<Long> logIds) {
+        if (logIds == null || logIds.isEmpty()) {
+            return;
+        }
+        this.removeByIds(logIds);
     }
 
     /**
