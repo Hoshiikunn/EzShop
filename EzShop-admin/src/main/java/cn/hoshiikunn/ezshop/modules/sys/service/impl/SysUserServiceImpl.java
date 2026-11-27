@@ -46,6 +46,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
      * 重置密码长度
      */
     private static final int RESET_PASSWORD_LENGTH = 6;
+    /**
+     * 单次批量删除上限
+     */
+    private static final int MAX_BATCH_DELETE_SIZE = 100;
 
     @Override
     public SysUserEntity getUserEntityByUsername(String username) {
@@ -175,6 +179,13 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     public void batchDeleteUsers(Set<Long> ids) {
         Long operatorId = SecurityUser.requireUserId();
 
+        // 入参校验
+        if (ids == null || ids.isEmpty()) {
+            throw new BusinessException(USER_IDS_REQUIRED);
+        }
+        if (ids.size() > MAX_BATCH_DELETE_SIZE) {
+            throw new BusinessException(USER_IDS_SIZE_EXCEEDED);
+        }
         // 数量比对
         List<SysUserEntity> userEntityList = this.listByIds(ids);
         if (userEntityList.size() != ids.size()) {

@@ -1,7 +1,6 @@
 package cn.hoshiikunn.ezshop.modules.sys.controller;
 
 import cn.hoshiikunn.ezshop.common.annotation.OperLog;
-import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserBatchDeleteDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserPageDTO;
 import cn.hoshiikunn.ezshop.modules.sys.dto.SysUserStatusDTO;
@@ -23,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 /**
  * 系统用户控制层
@@ -77,8 +77,8 @@ public class SysUserController {
     @Operation(summary = "批量删除用户")
     @OperLog(module = "用户管理", operation = "删除用户")
     @RequiresPermissions("sys:user:delete")
-    public Result<Void> batchDelete(@Valid @RequestBody SysUserBatchDeleteDTO dto) {
-        userService.batchDeleteUsers(dto.getIds());
+    public Result<Void> batchDelete(@RequestBody Set<Long> userIds) {
+        userService.batchDeleteUsers(userIds);
 
         return Result.ok(null, "删除成功");
     }
